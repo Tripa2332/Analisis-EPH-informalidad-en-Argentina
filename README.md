@@ -10,13 +10,13 @@ Explorar los datos y entrenar un clasificador k-NN para estimar si una persona a
 
 - [`TP_EPH_informalidad.ipynb`](./TP_EPH_informalidad.ipynb): notebook con la carga, limpieza, exploración y modelado.
 - [`consignas/TP Integrador · Segundo parcial.docx`](./consignas/TP%20Integrador%20%C2%B7%20Segundo%20parcial.docx): consigna del trabajo.
-- [`data/eph_2024_2026.csv`](./data/eph_2024_2026.csv): microdatos de entrada, con variables individuales y del hogar.
+- [`data/eph_2024_2026.csv`](./data/eph_2024_2026.csv): microdatos de entrada, con variables individuales y del hogar, de los nueve trimestres del 1T-2024 al 1T-2026.
 - [`data/eph_asalariados_limpio.csv`](./data/eph_asalariados_limpio.csv): datos preparados que genera el notebook.
 
 ## Cómo ejecutar
 
 1. Cloná el repositorio y abrí `TP_EPH_informalidad.ipynb` en Jupyter o Visual Studio Code.
 2. Instalá, si hace falta, las bibliotecas usadas en el notebook: `numpy`, `pandas`, `seaborn`, `matplotlib` y `scikit-learn`.
-3. Ejecutá las celdas en orden, desde el comienzo y con la carpeta del repositorio como directorio de trabajo.
+3. Ejecutá las celdas en orden, desde el comienzo y con la carpeta del repositorio como directorio de trabajo. La celda de `GridSearchCV` tarda unos 6 minutos.
 
-El notebook toma de `data/` los trimestres 2, 3 y 4 de 2025 y el trimestre 1 de 2026. La carpeta `consignas/` contiene el documento de referencia.
+El notebook usa los nueve trimestres de la EPH del 1T-2024 al 1T-2026. Lee los datos de `data/eph_2024_2026.csv` y, si el archivo no está, los descarga de Google Drive. Los microdatos originales están en el [sitio del INDEC](https://www.indec.gob.ar/Institucional/Indec/BasesDeDatos). La carpeta `consignas/` contiene el documento de referencia.

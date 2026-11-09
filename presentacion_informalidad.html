@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Quién trabaja en la informalidad?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de lectura por capítulos (la secuencia real del TP), con los gráficos en una grilla más ancha, una barra de capítulos fija arriba y el código de cada paso en una ventana aparte */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #0f1b26;
+  --ink-2: #485664;
+  --muted: #74808c;
+  --line: #dde3e9;
+  --grid: #e7ebef;
+  --axis: #c2cad2;
+  --tint: #e9f0f8;
+  --chip: #e6ecf2;
+  --accent: #1c5cab;
+  --formal: #2a78d6;
+  --informal: #eb6834;
+  --serie-mujer: #1baf7a;
+  --serie-varon: #6250d6;
+  --neutro: #a3adb7;
+  --div-neg: #2a78d6;
+  --div-pos: #e34948;
+  --div-mid: #f0efec;
+  --on-fill: #ffffff;
+  --code-bg: #f2f5f8;
+  --c-kw: #7b3fbf;
+  --c-str: #0a7d4f;
+  --c-com: #74808c;
+  --c-num: #b35900;
+  --c-fn: #1c5cab;
+  --c-bi: #0b6e99;
+  --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Fira Code", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1318; --surface: #161c22; --ink: #edf1f4; --ink-2: #b6c0ca; --muted: #8b97a3;
+    --line: #28313a; --grid: #222a32; --axis: #3a444e; --tint: #17263a; --chip: #222c36; --accent: #86b6ef;
+    --formal: #3987e5; --informal: #d95926; --serie-mujer: #199e70; --serie-varon: #9085e9; --neutro: #5d6873;
+    --div-neg: #3987e5; --div-pos: #e66767; --div-mid: #383835;
+    --code-bg: #0f1419; --c-kw: #c4a5f5; --c-str: #6fd3a0; --c-com: #8b97a3; --c-num: #f0a46a; --c-fn: #86b6ef; --c-bi: #6cc4e6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1318; --surface: #161c22; --ink: #edf1f4; --ink-2: #b6c0ca; --muted: #8b97a3;
+  --line: #28313a; --grid: #222a32; --axis: #3a444e; --tint: #17263a; --chip: #222c36; --accent: #86b6ef;
+  --formal: #3987e5; --informal: #d95926; --serie-mujer: #199e70; --serie-varon: #9085e9; --neutro: #5d6873;
+  --div-neg: #3987e5; --div-pos: #e66767; --div-mid: #383835;
+  --code-bg: #0f1419; --c-kw: #c4a5f5; --c-str: #6fd3a0; --c-com: #8b97a3; --c-num: #f0a46a; --c-fn: #86b6ef; --c-bi: #6cc4e6;
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 17px/1.6 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1080px; margin: 0 auto; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.prose { max-width: 66ch; display: grid; gap: 14px; align-content: start; }
+.prose ul, .prose ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+code, .code { font: 500 0.86em var(--f-mono); background: var(--chip); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+strong { font-weight: 650; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Barra de capítulos */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+.bar-in { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; gap: 16px; height: 52px; }
+.bar-brand { font: 600 15px var(--f-display); white-space: nowrap; color: var(--ink); text-decoration: none; }
+.bar nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.bar nav::-webkit-scrollbar { display: none; }
+.bar nav a { font: 500 13px var(--f-body); color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-radius: 6px; white-space: nowrap; }
+.bar nav a:hover { background: var(--chip); color: var(--ink); }
+.bar nav a.on { background: var(--ink); color: var(--bg); }
+.bar nav a span { font: 500 11px var(--f-mono); opacity: .7; margin-right: 4px; }
+.keys { font: 12px var(--f-body); color: var(--muted); white-space: nowrap; }
+.keys kbd { font: 500 11px var(--f-mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--ink-2); }
+.prog { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--accent); width: 0; }
+@media (max-width: 760px) { .keys { display: none; } .bar-brand { display: none; } }
+
+/* Portada */
+.hero { padding-block: 64px 56px; display: grid; gap: 28px; }
+.eyebrow { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.hero h1 { font: 600 clamp(2.6rem, 6.4vw, 4.8rem)/1.02 var(--f-display); letter-spacing: -0.015em; max-width: 14ch; }
+.lead { font-size: 1.2rem; color: var(--ink-2); max-width: 58ch; }
+.pregunta { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; display: grid; gap: 16px; max-width: 760px; }
+.pregunta-q { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; font: 500 1.3rem/1.35 var(--f-display); }
+.integrantes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 20px; font: 500 15px var(--f-body); color: var(--ink); }
+.integrantes li { display: flex; align-items: center; gap: 8px; }
+.integrantes li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.perfiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; }
+.perfil { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+.perfil h4 { margin: 0; font: 600 16px var(--f-body); }
+.perfil dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 14px; }
+.perfil dt { color: var(--ink-2); }
+.perfil dd { margin: 0; }
+.pred { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 14px; color: var(--ink-2); }
+.pred b { display: inline-flex; align-items: center; gap: 8px; font: 600 15px var(--f-body); color: var(--ink); }
+.pred b i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.seg { display: flex; gap: 2px; height: 28px; }
+.seg div { border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font: 600 13px var(--f-body); color: var(--on-fill); min-width: 0; }
+.seg-leyenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 24px; }
+.stat { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 2px; align-content: start; }
+.stat b { font: 600 2.2rem/1.1 var(--f-body); letter-spacing: -0.01em; }
+.stat span { font-size: 14px; color: var(--ink-2); }
+.stats.chicas .stat b { font-size: 1.6rem; }
+.stat.dest { border-top: 2px solid var(--formal); }
+
+/* Capítulos */
+.chapter { padding-block: 64px; border-top: 1px solid var(--line); display: grid; gap: 28px; scroll-margin-top: 56px; }
+.ch-head { display: grid; gap: 10px; }
+.ch-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.ch-row h2 { flex: 1 1 520px; }
+.ch-num { font: 500 13px var(--f-mono); color: var(--accent); letter-spacing: .06em; }
+.chapter h2 { font: 600 clamp(1.9rem, 4vw, 2.7rem)/1.1 var(--f-display); letter-spacing: -0.01em; }
+.chapter h3 { font: 600 1.25rem/1.3 var(--f-display); }
+.block { display: grid; gap: 16px; align-content: start; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 20px; align-items: start; }
+.cols3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px; align-items: start; }
+.cols > *, .cols3 > * { min-width: 0; }
+.nota { background: var(--tint); border-radius: 10px; padding: 16px 18px; max-width: 66ch; font-size: 16px; }
+.nota strong:first-child { display: block; margin-bottom: 2px; }
+
+/* Botón de código */
+.btn-cod { font: 600 13px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.btn-cod:hover { background: var(--chip); }
+.btn-cod i { font: 500 12px var(--f-mono); font-style: normal; color: var(--accent); }
+.btn-cod.sm { padding: 4px 9px; font-size: 12px; }
+
+/* Gráficos */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 14px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+.f-head { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; }
+.chart figcaption { display: grid; gap: 2px; min-width: 0; }
+.chart .ttl { font: 600 16px/1.35 var(--f-body); }
+.chart .sub { font-size: 14px; color: var(--ink-2); line-height: 1.45; }
+.plot { min-width: 0; position: relative; }
+.plot svg { display: block; overflow: visible; }
+.scroll { overflow-x: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend i.ln { height: 2px; width: 14px; border-radius: 1px; vertical-align: 3px; }
+.t-axis { fill: var(--muted); font: 400 12px var(--f-body); font-variant-numeric: tabular-nums; }
+.t-label { fill: var(--ink-2); font: 400 13px var(--f-body); }
+.t-value { fill: var(--ink); font: 600 13px var(--f-body); font-variant-numeric: tabular-nums; }
+.t-in { font: 600 12px var(--f-body); font-variant-numeric: tabular-nums; }
+.t-note { fill: var(--ink-2); font: 500 12px var(--f-body); }
+.g-grid { stroke: var(--grid); stroke-width: 1; }
+.g-axis { stroke: var(--axis); stroke-width: 1; }
+.g-ref { stroke: var(--ink-2); stroke-width: 1; }
+.hit { fill: transparent; }
+.cross { stroke: var(--axis); stroke-width: 1; }
+details.datos { font-size: 14px; }
+details.datos summary { color: var(--ink-2); cursor: pointer; width: max-content; }
+details.datos .tw { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; width: 100%; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; color: var(--ink-2); font-size: 13px; }
+td.r, th.r { text-align: right; }
+.tbl { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
+.tbl table td:first-child, .tbl table th:first-child { padding-left: 16px; }
+.tbl table td:last-child, .tbl table th:last-child { padding-right: 16px; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl caption { text-align: left; font: 600 15px var(--f-body); padding: 14px 16px 4px; }
+
+/* Desplegable de tasas */
+details.desp { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+details.desp > summary { cursor: pointer; padding: 14px 18px; font: 600 15px var(--f-body); list-style: none; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+details.desp > summary::-webkit-details-marker { display: none; }
+details.desp > summary::after { content: "Mostrar"; font: 500 13px var(--f-body); color: var(--accent); }
+details.desp[open] > summary::after { content: "Ocultar"; }
+details.desp > summary span { font-weight: 400; color: var(--ink-2); font-size: 14px; }
+details.desp .cols3 { padding: 0 18px 18px; }
+details.desp table caption { text-align: left; font: 600 14px var(--f-body); padding-bottom: 6px; }
+
+/* Flujo de datos */
+.flujo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 2px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.paso { background: var(--surface); padding: 16px; display: grid; gap: 6px; align-content: start; }
+.paso .n { font: 500 12px var(--f-mono); color: var(--accent); }
+.paso b { font: 600 1.5rem/1.1 var(--f-body); }
+.paso span { font-size: 14px; color: var(--ink-2); line-height: 1.45; }
+
+/* Variables */
+.vars { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.vgrupo { display: grid; gap: 10px; align-content: start; }
+.vgrupo h3 { font: 600 15px var(--f-body); }
+.vgrupo p { font-size: 14px; color: var(--ink-2); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font: 500 13px var(--f-mono); background: var(--chip); padding: 3px 8px; border-radius: 6px; }
+.chips.fuera span { background: transparent; border: 1px dashed var(--axis); color: var(--ink-2); }
+
+/* Vecinos */
+.vecinos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; align-items: center; }
+.dots { display: grid; grid-template-columns: repeat(8, 22px); gap: 8px; }
+.dots i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+
+/* Matriz de confusión */
+.cm { display: grid; grid-template-columns: auto 1fr 1fr; gap: 2px; font-variant-numeric: tabular-nums; }
+.cm .h { font-size: 12px; color: var(--muted); padding: 4px 6px; display: flex; align-items: flex-end; }
+.cm .hl { align-items: center; justify-content: flex-end; text-align: right; }
+.cm .c { border-radius: 6px; padding: 14px 12px; display: grid; gap: 2px; min-height: 84px; align-content: center; }
+.cm .c b { font: 600 1.4rem/1.1 var(--f-body); }
+.cm .c span { font-size: 12px; }
+
+/* Conclusiones */
+.concl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px; }
+.concl > div { display: grid; gap: 10px; align-content: start; }
+.concl ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; font-size: 16px; }
+.cierre { font: 500 clamp(1.3rem, 2.6vw, 1.7rem)/1.4 var(--f-display); max-width: 40ch; }
+footer { padding-block: 40px 56px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); display: grid; gap: 6px; }
+
+/* Ventana de código */
+dialog#modal { width: min(940px, calc(100vw - 24px)); max-height: calc(100vh - 40px); padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); }
+dialog#modal[open] { display: flex; flex-direction: column; }
+dialog#modal::backdrop { background: rgba(6, 12, 18, 0.6); }
+.m-head, .m-tabs { flex-shrink: 0; }
+.m-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 18px 20px 12px; border-bottom: 1px solid var(--line); }
+.m-head h3 { font: 600 1.4rem/1.2 var(--f-display); margin-top: 4px; }
+.m-cerrar { font: 600 13px var(--f-body); color: var(--ink); background: var(--chip); border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.m-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 10px 20px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+.m-tabs button { font: 500 13px var(--f-body); color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; cursor: pointer; white-space: nowrap; }
+.m-tabs button:hover, .m-tabs button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.m-body { overflow-y: auto; padding: 8px 20px 24px; display: grid; gap: 22px; }
+.snip { display: grid; gap: 8px; scroll-margin-top: 8px; }
+.snip-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; }
+.snip-h h4 { margin: 0; font: 600 15px var(--f-body); }
+.snip-h button { font: 500 12px var(--f-body); color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+pre.cod { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 400 13px/1.6 var(--f-mono); tab-size: 4; }
+pre.cod code { background: none; padding: 0; font: inherit; white-space: pre; color: var(--ink); }
+.hljs-keyword, .hljs-operator.hljs-keyword { color: var(--c-kw); }
+.hljs-string { color: var(--c-str); }
+.hljs-comment { color: var(--c-com); font-style: italic; }
+.hljs-number, .hljs-literal { color: var(--c-num); }
+.hljs-title, .hljs-title.function_ { color: var(--c-fn); }
+.hljs-built_in { color: var(--c-bi); }
+.hljs-subst { color: var(--ink); }
+
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--bg); font: 500 13px/1.45 var(--f-body); padding: 7px 10px; border-radius: 6px; max-width: 260px; white-space: pre-line; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="bar-brand" href="#inicio">Informalidad · EPH</a>
+    <nav id="nav" aria-label="Capítulos"></nav>
+    <span class="keys"><kbd>←</kbd> <kbd>→</kbd> capítulos</span>
+  </div>
+  <div class="prog" id="prog"></div>
+</header>
+
+<main class="wrap">
+
+<section class="hero" id="inicio" data-nav="Inicio">
+  <div class="eyebrow">TP Integrador · Python para Ciencia de Datos · UADE · 2C 2026</div>
+  <h1>¿Quién trabaja en la informalidad?</h1>
+  <p class="lead">Un modelo k-NN que estima, con microdatos de la Encuesta Permanente de Hogares, si un trabajador asalariado tiene descuento jubilatorio. Sirve para decidir a quién priorizar en programas de registración laboral.</p>
+  <ul class="integrantes" id="integrantes" aria-label="Integrantes"></ul>
+  <div class="pregunta">
+    <div class="pregunta-q"><span class="code">PP07H</span><span>¿Por ese trabajo tiene descuento jubilatorio?</span></div>
+    <div class="seg" id="seg-hero" role="img"></div>
+    <div class="seg-leyenda" id="seg-hero-ley"></div>
+  </div>
+  <div class="stats" id="stats-hero"></div>
+</section>
+
+<section class="chapter" id="problema" data-nav="Problema">
+  <div class="ch-head"><div class="ch-num">01 · EL PROBLEMA</div><h2>Más de un tercio de los asalariados no está registrado</h2></div>
+  <div class="prose">
+    <p>Un asalariado informal no tiene aportes jubilatorios, obra social, aguinaldo ni vacaciones pagas, y no está protegido frente a un despido. El Estado tiene herramientas para revertirlo, como inspecciones, incentivos a la registración y capacitación, pero los recursos son limitados y no siempre se sabe a quién priorizar.</p>
+    <p><strong>Pregunta:</strong> ¿podemos predecir si un asalariado está en la informalidad a partir de sus características personales, laborales y de su hogar?</p>
+    <p><strong>Objetivo:</strong> un clasificador k-NN que ordene a las personas por riesgo de informalidad, para orientar programas de registración y las inspecciones por sector.</p>
+  </div>
+  <div class="nota"><strong>Qué no hace el modelo</strong>No acusa ni sanciona a nadie: estima un riesgo para ordenar prioridades. Tampoco explica causas, solo encuentra asociaciones.</div>
+</section>
+
+<section class="chapter" id="datos" data-nav="Datos">
+  <div class="ch-head"><div class="ch-num">02 · LOS DATOS</div>
+    <div class="ch-row"><h2>Nueve trimestres de la EPH, de personas a hogares</h2><button class="btn-cod" data-code="datos"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="prose">
+    <p>El INDEC publica cada trimestre dos bases: la <strong>individual</strong>, con una fila por persona y más de 230 columnas, y la de <strong>hogares</strong>. Apilamos los nueve trimestres con <code>pd.concat</code> y sumamos tres datos del hogar con <code>pd.merge</code> (left join, <code>validate="m:1"</code>: muchas personas, un hogar).</p>
+  </div>
+  <div class="flujo" id="flujo"></div>
+  <div class="block">
+    <h3>Las variables</h3>
+    <div class="vars">
+      <div class="vgrupo"><h3>De la persona</h3><div class="chips"><span>edad</span><span>mujer</span><span>jefe_hogar</span><span>migrante</span><span>nivel_ed</span></div></div>
+      <div class="vgrupo"><h3>Del trabajo</h3><div class="chips"><span>horas</span><span>antiguedad</span><span>tamano</span><span>tamano_sin_dato</span><span>estatal</span><span>servicio_domestico</span><span>construccion</span><span>comercio_gastronomia</span></div></div>
+      <div class="vgrupo"><h3>Del hogar</h3><div class="chips fuera"><span>miembros_hogar</span><span>menores_10</span><span>propietario</span></div><p>Las usamos en la exploración, pero quedaron fuera del modelo (capítulo 06).</p></div>
+    </div>
+    <p style="max-width:66ch">La variable a predecir es <code>informal</code>: 1 si la persona respondió que <strong>no</strong> tiene descuento jubilatorio (<code>PP07H = 2</code>).</p>
+  </div>
+  <div class="nota"><strong>Fuga de datos</strong>Dejamos afuera a propósito el aguinaldo, las vacaciones pagas, la obra social y el ingreso. Son parte de la definición de informalidad o consecuencia directa de ella: usarlas sería darle la respuesta al modelo.</div>
+</section>
+
+<section class="chapter" id="calidad" data-nav="Calidad">
+  <div class="ch-head"><div class="ch-num">03 · CALIDAD DE LOS DATOS</div>
+    <div class="ch-row"><h2>Qué encontramos y qué decidimos</h2><button class="btn-cod" data-code="calidad"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="cols">
+    <div class="prose">
+      <p><strong>Nulos.</strong> Las siete columnas del trabajo tienen 228.514 nulos, exactamente la misma cantidad que personas no ocupadas. No son datos perdidos: a quien no trabaja no se le hacen esas preguntas. Se resuelven al quedarnos con los asalariados.</p>
+      <p><strong>Duplicados.</strong> No hay filas repetidas ni personas repetidas en un mismo trimestre. Pero 61.367 filas son personas que ya aparecieron en otro trimestre, porque la EPH es un <em>panel rotativo</em>: un hogar se encuesta dos trimestres, sale dos y vuelve dos. Para la exploración las conservamos; para el modelo dejamos <strong>una fila por persona</strong>, así nadie queda a la vez en train y en test.</p>
+      <p><strong>Horas atípicas.</strong> Con el criterio de Tukey (Q1 = 24 h, Q3 = 45 h) los límites son −8 h y 76 h: solo hay atípicos hacia arriba. Son jornadas largas pero posibles, así que las conservamos. Atípico no es lo mismo que imposible.</p>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Código especial o valor imposible</th><th class="r">Casos</th><th>Decisión</th></tr></thead>
+        <tbody>
+          <tr><td>Horas = 999 (no responde)</td><td class="r">191</td><td>Eliminar</td></tr>
+          <tr><td>Horas entre 99 y 998</td><td class="r">130</td><td>Eliminar</td></tr>
+          <tr><td>Edad menor a 14</td><td class="r">15</td><td>Eliminar</td></tr>
+          <tr><td>Lugar de nacimiento sin dato</td><td class="r">34</td><td>Eliminar</td></tr>
+          <tr><td>No sabe el tamaño del lugar de trabajo</td><td class="r">36.292</td><td>Usar la pregunta por rangos; si tampoco sabe (22.641), marcar <code>tamano_sin_dato</code></td></tr>
+          <tr><td>Antigüedad sin dato</td><td class="r">13.434</td><td>Completar con la mediana de train, después del split</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="prose"><p>Los códigos se transformaron en números con sentido: las variables con orden (educación, tamaño, antigüedad) con <code>.map()</code>, y las que no tienen orden (sexo, sector, rama) en variables 0/1, porque k-NN calcula distancias.</p></div>
+</section>
+
+<section class="chapter" id="exploracion" data-nav="Exploración">
+  <div class="ch-head"><div class="ch-num">04 · EXPLORACIÓN</div>
+    <div class="ch-row"><h2>Cómo son los asalariados de la muestra</h2><button class="btn-cod" data-code="exploracion"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="cols">
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Edad contra horas trabajadas</span><span class="sub">Muestra de 3.000 personas.</span></figcaption><button class="btn-cod sm" data-code="exploracion" data-snip="1"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="legend" data-ley="cond"></div><div class="plot" id="c-scatter"></div>
+    </figure>
+    <div class="prose">
+      <p>De <span id="e-total"></span> asalariados, <strong><span id="e-inf"></span> son informales</strong>. Las clases están desbalanceadas: un modelo que diga siempre "formal" ya acierta en la mayoría de los casos. Por eso vamos a necesitar un baseline.</p>
+      <p>En mediana, los informales tienen <strong id="e-edad"></strong>, trabajan <strong id="e-horas"></strong> y llevan menos tiempo en el empleo. La mediana del nivel educativo es la misma en los dos grupos: secundario completo.</p>
+      <p>La edad promedio ronda los 40 años. En las horas, la mediana (40 h) supera a la media (<span id="e-media-h"></span>): hay una cola de jornadas parciales, casi todas informales.</p>
+      <p>En el gráfico, los informales se concentran en jornadas cortas y en las puntas de edad, pero <strong>las dos nubes se superponen mucho</strong>: con dos variables no alcanza para separarlos. Por eso el modelo combina varias.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="relaciones" data-nav="Relaciones">
+  <div class="ch-head"><div class="ch-num">05 · QUÉ SE RELACIONA CON LA INFORMALIDAD</div>
+    <div class="ch-row"><h2>Dónde se trabaja pesa más que quién es la persona</h2><button class="btn-cod" data-code="relaciones"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="cols">
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Tasa de informalidad por tamaño del lugar de trabajo</span><span class="sub">Cantidad de personas que trabajan en el establecimiento.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="1"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="plot" id="c-tasa-tam"></div>
+    </figure>
+    <div class="prose">
+      <p>Como <code>informal</code> vale 0 o 1, su promedio en un grupo es la tasa de informalidad del grupo. La calculamos con <code>groupby</code> + <code>agg</code>.</p>
+      <p>El tamaño es la diferencia más grande del análisis: <strong>74 % de informalidad en lugares de hasta 5 personas contra 11 % en los de más de 40</strong>. No saber el tamaño también es muy común entre los informales: changas o trabajo en casas particulares.</p>
+      <p>Terminar el secundario es un punto de quiebre (de 58 % a 37 %), los jóvenes de 14 a 24 años son los más expuestos (68 %) y Cuyo y el NOA superan el 43 %. Las tablas completas están abajo.</p>
+    </div>
+  </div>
+  <details class="desp">
+    <summary>Tasas de informalidad por nivel educativo, grupo de edad y región</summary>
+    <div class="cols3" id="tablas-tasas"></div>
+  </details>
+  <figure class="chart">
+    <div class="f-head"><figcaption><span class="ttl">Tasa de informalidad con y sin cada característica</span><span class="sub">Servicio doméstico y construcción disparan la informalidad; trabajar en el Estado la reduce mucho. El sexo, el hogar y haber nacido en otro país cambian poco.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="3"><i>&lt;/&gt;</i>Código</button></div>
+    <div class="legend" id="ley-dumb"></div><div class="plot" id="c-dumb"></div><details class="datos"></details>
+  </figure>
+  <figure class="chart">
+    <div class="f-head"><figcaption><span class="ttl">Matriz de correlación</span><span class="sub">Azul: relación negativa. Rojo: positiva. La última fila es la variable objetivo.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="4"><i>&lt;/&gt;</i>Código</button></div>
+    <div class="plot scroll" id="c-heat"></div>
+  </figure>
+  <div class="cols">
+    <div class="prose">
+      <p>Escala de lectura: hasta 0,25 no hay relación lineal; de 0,25 a 0,50 es débil; de 0,50 a 0,75, moderada; desde 0,75, fuerte.</p>
+      <p><strong>Ninguna variable llega a moderada.</strong> Las más fuertes son débiles: tamaño (−0,45), antigüedad (−0,41), Estado (−0,34), nivel educativo (−0,31) y servicio doméstico (0,28). Que ninguna sola sea determinante es la razón para usar un modelo que las combine.</p>
+    </div>
+    <div class="prose">
+      <p><code>tamano</code> y <code>tamano_sin_dato</code> correlacionan −0,76 entre sí porque una se construyó a partir de la otra.</p>
+      <p><strong>Correlación no es causalidad:</strong> que el tamaño de la empresa se relacione con la informalidad no prueba que una cause la otra.</p>
+    </div>
+  </div>
+  <figure class="chart">
+    <div class="f-head"><figcaption><span class="ttl">Tasa de informalidad por trimestre</span><span class="sub">Estable entre 2024 y 2026: el problema es persistente. Las mujeres tienen una tasa algo mayor en todo el período. El eje arranca en 0 para no exagerar diferencias de uno o dos puntos.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="5"><i>&lt;/&gt;</i>Código</button></div>
+    <div class="legend" id="ley-serie"></div><div class="plot" id="c-serie"></div><details class="datos"></details>
+  </figure>
+</section>
+
+<section class="chapter" id="modelo" data-nav="Modelo">
+  <div class="ch-head"><div class="ch-num">06 · EL MODELO</div>
+    <div class="ch-row"><h2>k-NN: decidir por los vecinos más parecidos</h2><button class="btn-cod" data-code="modelo"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="vecinos">
+    <div class="prose">
+      <p>Para clasificar a una persona, k-NN busca a las <strong>k personas más parecidas</strong> de train y devuelve la clase más votada.</p>
+      <p>Un ejemplo real de test: mujer de 35 años, servicio doméstico, 25 horas semanales, sin dato del tamaño del lugar. De sus 31 vecinos, <strong>22 son informales</strong>, así que el modelo predice "informal". Y acierta.</p>
+    </div>
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Los 31 vecinos de una persona de test</span></figcaption><button class="btn-cod sm" data-code="modelo" data-snip="7"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="legend" data-ley="cond"></div><div class="dots" id="dots" role="img" aria-label="22 vecinos informales y 9 formales"></div>
+    </figure>
+  </div>
+  <div class="block">
+    <h3>Preparación</h3>
+    <div class="flujo" id="flujo-modelo"></div>
+  </div>
+  <div class="cols">
+    <div class="prose">
+      <h3>Escalar importa</h3>
+      <p>k-NN mide distancias. Sin escalar, la edad (14 a 100) y las horas (0 a 98) dominan la distancia sobre las variables 0/1. <code>StandardScaler</code> lleva cada columna a media 0 y desvío 1, y va dentro de un <code>Pipeline</code> para que se ajuste solo con train.</p>
+      <p>Con k = 5, escalar sube el accuracy de <strong><span id="m-crudo"></span></strong> a <strong><span id="m-esc"></span></strong>.</p>
+      <h3>Menos variables, mejor modelo</h3>
+      <p>Las tres variables del hogar casi no se relacionan con la informalidad, pero en k-NN igual cuentan en la distancia y meten ruido. Sacarlas subió el accuracy de validación de 80,3 % a 81,2 %.</p>
+    </div>
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Elegir k con validación cruzada</span><span class="sub">GridSearchCV sobre train, con 5 particiones estratificadas. Banda: ± 1 desvío entre particiones. Los valores de k crecen en escala logarítmica. El baseline (59,2 %) queda por debajo del eje.</span></figcaption><button class="btn-cod sm" data-code="modelo" data-snip="6"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="legend" id="ley-cv"></div><div class="plot" id="c-cv"></div><details class="datos"></details>
+    </figure>
+  </div>
+  <div class="nota"><strong>Cómo leer la curva</strong>Con k = 1 el modelo copia a una sola persona parecida y sobreajusta: es el peor resultado. A medida que k crece, mejora hasta aplanarse. El mejor es <strong><span id="m-best"></span></strong>, y entre k = 15 y k = 51 los resultados son prácticamente iguales. Todo esto se decide sin mirar el test.</div>
+  <div class="block">
+    <div class="ch-row"><h3>Así se usaría: dos perfiles nuevos</h3><button class="btn-cod sm" data-code="modelo" data-snip="8"><i>&lt;/&gt;</i>Código</button></div>
+    <p style="max-width:66ch">Cargamos los datos de una persona que el modelo nunca vio y le pedimos una predicción con <code>mejor_knn.predict()</code>. Así se usaría para decidir a quién ofrecer un programa de registración.</p>
+    <div class="perfiles">
+      <div class="perfil">
+        <h4>Joven en un comercio chico</h4>
+        <dl>
+          <dt>Edad</dt><dd>22 años, mujer</dd>
+          <dt>Trabajo</dt><dd>Comercio o gastronomía, en un lugar de hasta 5 personas, sector privado</dd>
+          <dt>Jornada</dt><dd>30 horas por semana</dd>
+          <dt>Antigüedad</dt><dd>De 3 a 6 meses</dd>
+          <dt>Educación</dt><dd>Secundario incompleto</dd>
+        </dl>
+        <div class="pred">Predicción <b id="pred-joven"></b></div>
+      </div>
+      <div class="perfil">
+        <h4>Profesional en una empresa grande</h4>
+        <dl>
+          <dt>Edad</dt><dd>40 años, varón, jefe de hogar</dd>
+          <dt>Trabajo</dt><dd>Empresa de más de 40 personas, sector privado</dd>
+          <dt>Jornada</dt><dd>45 horas por semana</dd>
+          <dt>Antigüedad</dt><dd>Más de 5 años</dd>
+          <dt>Educación</dt><dd>Universitario completo</dd>
+        </dl>
+        <div class="pred">Predicción <b id="pred-prof"></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="evaluacion" data-nav="Evaluación">
+  <div class="ch-head"><div class="ch-num">07 · EVALUACIÓN</div>
+    <div class="ch-row"><h2>Usamos el test una sola vez</h2><button class="btn-cod" data-code="evaluacion"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="stats chicas" id="stats-acc"></div>
+  <div class="cols">
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Matriz de confusión del k-NN</span><span class="sub">Filas: clase real. Columnas: clase predicha.</span></figcaption><button class="btn-cod sm" data-code="evaluacion" data-snip="2"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="cm" id="cm-knn"></div>
+    </figure>
+    <div class="prose">
+      <p>El modelo acierta <strong><span id="v-acc"></span></strong> de las <span id="v-ntest"></span> personas de test. El accuracy de validación (<span id="v-cv"></span>) y el de test son casi iguales: la estimación es confiable.</p>
+      <p>El baseline, que predice siempre "formal", acierta el <span id="v-base"></span> pero no detecta a ninguno de los <span id="v-ninf"></span> informales de test. Por eso el accuracy solo puede engañar con clases desbalanceadas.</p>
+      <p><strong>Falsos negativos</strong> (informal predicho como formal): el error más grave para una política de registración, porque esa persona queda fuera de la ayuda.</p>
+      <p><strong>Falsos positivos</strong> (formal predicho como informal): menos grave, se le ofrece un programa a alguien que no lo necesita.</p>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="tbl" id="tbl-reporte"></div>
+    <div class="prose">
+      <p>El modelo <strong>detecta al <span id="v-rec"></span> de los informales</strong> (recall), y de los que marca como informales, el <span id="v-prec"></span> lo es (precision).</p>
+      <p>El F1 macro es <span id="v-f1"></span>, contra <span id="v-f1b"></span> del baseline, que tiene F1 = 0 en la clase Informal porque nunca la predice. El F1 castiga a un modelo que ignora una clase; el accuracy no.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="errores" data-nav="Errores">
+  <div class="ch-head"><div class="ch-num">08 · EN QUÉ SE EQUIVOCA Y QUÉ USA</div>
+    <div class="ch-row"><h2>La informalidad escondida</h2><button class="btn-cod" data-code="errores"><i>&lt;/&gt;</i>Ver código</button></div></div>
+  <div class="cols">
+    <div class="block">
+      <div class="prose"><p>Los <span id="r-fn"></span> informales que el modelo no detecta <strong>se parecen a los formales</strong>: son mayores, trabajan más horas, tienen más antigüedad y educación, y trabajan en lugares grandes o en el Estado. Sus vecinos más cercanos son formales, y k-NN los clasifica igual.</p></div>
+      <div class="tbl" id="tbl-perfil"></div>
+    </div>
+    <div class="block">
+      <div class="tbl" id="tbl-recall"></div>
+      <div class="prose"><p>En lugares de más de 40 personas detecta solo al <strong>17 %</strong> de los informales, y en el Estado al <strong>23 %</strong>. En lugares chicos o cuando no se sabe el tamaño, a más del 85 %.</p></div>
+    </div>
+  </div>
+  <div class="cols">
+    <figure class="chart">
+      <div class="f-head"><figcaption><span class="ttl">Importancia por permutación</span><span class="sub">Puntos de accuracy que se pierden en test al mezclar al azar cada variable (promedio de 5 repeticiones).</span></figcaption><button class="btn-cod sm" data-code="errores" data-snip="2"><i>&lt;/&gt;</i>Código</button></div>
+      <div class="plot" id="c-imp"></div><details class="datos"></details>
+    </figure>
+    <div class="prose">
+      <p>k-NN no tiene coeficientes. Para saber en qué se apoya, mezclamos una variable a la vez y medimos cuánto empeora.</p>
+      <p><strong>El tamaño del lugar de trabajo es, por lejos, lo que más usa:</strong> el doble que cualquier otra variable. Eso explica el error anterior: en lugares grandes el modelo casi siempre predice "formal".</p>
+      <p>No coincide del todo con la correlación. Las horas pesan más de lo que sugería su correlación, porque k-NN combina variables. El Estado pesa menos, probablemente porque esa información ya la aporta el tamaño.</p>
+      <p>Mujer, jefe de hogar y migrante casi no aportan.</p>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="conclusiones" data-nav="Conclusiones">
+  <div class="ch-head"><div class="ch-num">09 · CONCLUSIONES</div><h2>Qué aprendimos</h2></div>
+  <div class="concl">
+    <div><h3>De los datos</h3><ul>
+      <li>Alrededor del 37 % de los asalariados no tiene descuento jubilatorio, y la tasa se mantuvo estable en los nueve trimestres.</li>
+      <li>Dónde se trabaja pesa más que quién es la persona: tamaño del lugar, rama y sector marcan las diferencias más grandes.</li>
+      <li>Terminar el secundario es un punto de quiebre, y los jóvenes de 14 a 24 años son los más expuestos (68 %).</li>
+    </ul></div>
+    <div><h3>Del modelo</h3><ul>
+      <li>k-NN con k = 31, elegido con validación cruzada: 80,9 % de accuracy en test contra 59,2 % del baseline.</li>
+      <li>Detecta a 7 de cada 10 informales, con un F1 macro de 0,80 contra 0,37 del baseline.</li>
+      <li>Escalar ayudó, sacar las variables del hogar ayudó, y pasar de 4 a 9 trimestres ayudó poco: el límite lo ponen las variables.</li>
+    </ul></div>
+    <div><h3>De sus errores</h3><ul>
+      <li>Falla con la informalidad escondida: en lugares de más de 40 personas detecta al 17 % de los informales, y en el Estado al 23 %.</li>
+      <li>En lugares chicos o cuando no se sabe el tamaño, detecta a más del 85 %.</li>
+    </ul></div>
+  </div>
+  <div class="block">
+    <h3>Qué le agregaríamos</h3>
+    <ol class="prose">
+      <li><strong>Más variables del trabajo:</strong> contratos con fecha de finalización, calificación de la tarea, más de un empleo y la rama completa.</li>
+      <li><strong>Región y el resto de las ramas</strong> dentro del modelo, con una codificación para categorías sin orden.</li>
+      <li><strong>Priorizar el recall de los informales</strong>, eligiendo k con <code>scoring="recall"</code> o <code>"f1"</code> en vez de accuracy.</li>
+      <li><strong>Comparar con otros modelos</strong>, como regresión logística o árboles de decisión.</li>
+      <li>Tener presente que la EPH es urbana y que los datos son declarados por los encuestados.</li>
+    </ol>
+  </div>
+  <p class="cierre">Con datos básicos y fáciles de relevar, el modelo identifica a 7 de cada 10 informales y supera claramente al baseline. Sirve para los perfiles típicos; para la informalidad escondida en el Estado y en empresas grandes hacen falta otras herramientas, como el cruce de registros o las inspecciones.</p>
+</section>
+
+<footer>
+  <div>Fuente: Encuesta Permanente de Hogares, Instituto Nacional de Estadística y Censos (INDEC), 1T-2024 a 1T-2026. <a href="https://www.indec.gob.ar/Institucional/Indec/BasesDeDatos" target="_blank" rel="noopener">Bases de datos</a>.</div>
+  <div>Código y datos: <a href="https://github.com/Tripa2332/Analisis-EPH-informalidad-en-Argentina" target="_blank" rel="noopener">repositorio del TP</a>. Proporciones simples de la muestra, sin el ponderador de la EPH.</div>
+</footer>
+</main>
+
+<dialog id="modal" aria-labelledby="m-tit">
+  <div class="m-head">
+    <div><div class="eyebrow" id="m-cap"></div><h3 id="m-tit">Código</h3></div>
+    <button class="m-cerrar" id="m-cerrar" type="button">Cerrar</button>
+  </div>
+  <div class="m-tabs" id="m-tabs"></div>
+  <div class="m-body" id="m-body"></div>
+</dialog>
+
+<div id="tip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script id="datos-json" type="application/json">{"filas_crudas":411524,"asalariados_brutos":132734,"asalariados_limpios":132368,"tasa_informal":36.8,"por_trimestre":[46050,47151,47564,46860,45425,46086,44946,43703,43739],"tasa_ed":[{"g":"Sin instrucción","tasa":63.6,"n":250},{"g":"Primario inc.","tasa":66.6,"n":2776},{"g":"Primario comp.","tasa":54.7,"n":12479},{"g":"Secundario inc.","tasa":57.9,"n":20079},{"g":"Secundario comp.","tasa":37.4,"n":43896},{"g":"Universitario inc.","tasa":37.3,"n":19237},{"g":"Universitario comp.","tasa":14.0,"n":33651}],"tasa_tam":[{"g":"Hasta 5","tasa":74.2,"n":24996},{"g":"6 a 40","tasa":28.8,"n":42741},{"g":"Más de 40","tasa":10.7,"n":42154},{"g":"Sin dato","tasa":59.4,"n":22477}],"tasa_region":[{"g":"Cuyo","tasa":45.2,"n":13089},{"g":"NOA","tasa":43.3,"n":28460},{"g":"NEA","tasa":40.1,"n":12083},{"g":"Pampeana","tasa":36.4,"n":39686},{"g":"GBA","tasa":34.6,"n":22313},{"g":"Patagonia","tasa":20.9,"n":16737}],"tasa_edad":[{"g":"14-24","tasa":68.3,"n":14970},{"g":"25-34","tasa":43.5,"n":34146},{"g":"35-44","tasa":29.9,"n":34153},{"g":"45-54","tasa":25.6,"n":29697},{"g":"55-64","tasa":26.7,"n":16081},{"g":"65+","tasa":45.8,"n":3321}],"binarias":[{"v":"servicio_domestico","si0":32.5,"si1":78.0,"pct":9.5},{"v":"construccion","si0":34.2,"si1":69.4,"pct":7.3},{"v":"tamano_sin_dato","si0":32.2,"si1":59.4,"pct":17.0},{"v":"comercio_gastronomia","si0":33.9,"si1":48.9,"pct":19.5},{"v":"migrante","si0":36.6,"si1":44.3,"pct":2.8},{"v":"mujer","si0":35.3,"si1":38.6,"pct":46.8},{"v":"propietario","si0":34.6,"si1":37.9,"pct":68.0},{"v":"jefe_hogar","si0":43.8,"si1":29.2,"pct":47.8},{"v":"estatal","si0":47.5,"si1":11.0,"pct":29.3}],"hist_edad":{"Formal":[24,1483,4649,6919,8686,9273,9651,9862,9329,8370,6452,4794,2887,848,271,73,22,15,12],"Informal":[355,4624,6996,6349,5594,4428,4114,3846,3270,2722,2168,1799,1215,630,365,184,58,14,4]},"hist_edad_bins":[14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74,78,82,86,90],"hist_horas":{"Formal":[5400,592,1057,1723,6484,4033,11402,6438,21208,15781,3189,1510,2428,223,1320,71,645,11,30],"Informal":[2145,3112,3159,3313,6749,2343,4855,3103,8168,6274,1573,1024,1436,201,806,60,346,9,25]},"hist_horas_bins":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95],"resumen":{"edad":{"count":132368.0,"mean":40.16,"std":12.51,"min":14.0,"25%":30.0,"50%":39.0,"75%":49.0,"max":100.0},"horas":{"count":132368.0,"mean":34.66,"std":16.24,"min":0.0,"25%":24.0,"50%":40.0,"75%":45.0,"max":98.0}},"medianas":{"Formal":{"edad":42.0,"horas":40.0,"antiguedad":6.0,"nivel_ed":4.0},"Informal":{"edad":34.0,"horas":30.0,"antiguedad":5.0,"nivel_ed":4.0}},"tukey_horas":{"q1":24.0,"q3":45.0,"inf":-7.5,"sup":76.5},"cuartiles":{"Formal":{"edad":[15.0,33.0,42.0,51.0,100.0],"horas":[0.0,30.0,40.0,45.0,98.0]},"Informal":{"edad":[14.0,26.0,34.0,46.0,99.0],"horas":[0.0,20.0,30.0,44.0,98.0]}},"dist_ed":[250,2776,12479,20079,43896,19237,33651],"dist_tam":[22477,24996,42741,42154],"dist_ant":[2491,5092,4582,5935,38539,62414],"corr_vars":["edad","horas","antiguedad","nivel_ed","tamano","miembros_hogar","menores_10","tamano_sin_dato","mujer","jefe_hogar","estatal","migrante","propietario","servicio_domestico","construccion","comercio_gastronomia","informal"],"corr":[[1.0,-0.06,0.4,-0.03,0.07,-0.15,-0.17,0.05,0.05,0.33,0.18,0.05,0.13,0.09,-0.07,-0.18,-0.21],[-0.06,1.0,0.02,-0.07,0.13,0.01,0.02,-0.17,-0.3,0.03,-0.16,0.01,-0.05,-0.26,0.08,0.16,-0.14],[0.4,0.02,1.0,0.13,0.21,-0.09,-0.05,-0.03,0.03,0.18,0.26,-0.01,0.05,-0.02,-0.16,-0.15,-0.41],[-0.03,-0.07,0.13,1.0,0.27,-0.21,-0.1,-0.17,0.18,0.03,0.28,-0.02,-0.06,-0.21,-0.21,-0.08,-0.31],[0.07,0.13,0.21,0.27,1.0,-0.1,-0.02,-0.76,-0.14,0.12,0.35,-0.04,-0.05,-0.54,-0.08,-0.11,-0.45],[-0.15,0.01,-0.09,-0.21,-0.1,1.0,0.54,0.06,-0.04,-0.31,-0.08,-0.02,0.23,0.05,0.1,0.04,0.16],[-0.17,0.02,-0.05,-0.1,-0.02,0.54,1.0,0.0,-0.01,-0.03,-0.03,-0.01,-0.02,0.01,0.06,0.02,0.07],[0.05,-0.17,-0.03,-0.17,-0.76,0.06,0.0,1.0,0.22,-0.05,-0.16,0.04,0.05,0.7,-0.07,-0.13,0.21],[0.05,-0.3,0.03,0.18,-0.14,-0.04,-0.01,0.22,1.0,-0.07,0.11,0.01,-0.0,0.33,-0.24,-0.05,0.03],[0.33,0.03,0.18,0.03,0.12,-0.31,-0.03,-0.05,-0.07,1.0,0.07,0.02,-0.17,0.01,-0.05,-0.08,-0.15],[0.18,-0.16,0.26,0.28,0.35,-0.08,-0.03,-0.16,0.11,0.07,1.0,-0.06,0.04,-0.21,-0.15,-0.31,-0.34],[0.05,0.01,-0.01,-0.02,-0.04,-0.02,-0.01,0.04,0.01,0.02,-0.06,1.0,-0.05,0.05,0.04,-0.0,0.03],[0.13,-0.05,0.05,-0.06,-0.05,0.23,-0.02,0.05,-0.0,-0.17,0.04,-0.05,1.0,0.03,0.03,-0.03,0.03],[0.09,-0.26,-0.02,-0.21,-0.54,0.05,0.01,0.7,0.33,0.01,-0.21,0.05,0.03,1.0,-0.09,-0.16,0.28],[-0.07,0.08,-0.16,-0.21,-0.08,0.1,0.06,-0.07,-0.24,-0.05,-0.15,0.04,0.03,-0.09,1.0,-0.14,0.19],[-0.18,0.16,-0.15,-0.08,-0.11,0.04,0.02,-0.13,-0.05,-0.08,-0.31,-0.0,-0.03,-0.16,-0.14,1.0,0.12],[-0.21,-0.14,-0.41,-0.31,-0.45,0.16,0.07,0.21,0.03,-0.15,-0.34,0.03,0.03,0.28,0.19,0.12,1.0]],"serie":{"periodos":["2024-T1","2024-T2","2024-T3","2024-T4","2025-T1","2025-T2","2025-T3","2025-T4","2026-T1"],"Mujer":[38.9,38.4,38.4,38.5,37.8,38.8,38.6,38.2,39.4],"Varón":[34.6,34.9,35.3,34.4,35.0,35.7,36.2,35.4,36.0],"Total":[36.6,36.6,36.8,36.3,36.3,37.1,37.4,36.7,37.6]},"scatter":[[44.0,45.0,0.0],[61.0,35.0,0.0],[42.0,40.0,0.0],[34.0,40.0,0.0],[41.0,6.0,1.0],[30.0,48.0,1.0],[47.0,48.0,0.0],[37.0,20.0,0.0],[38.0,63.0,0.0],[53.0,18.0,1.0],[26.0,56.0,1.0],[38.0,30.0,0.0],[18.0,36.0,1.0],[51.0,16.0,1.0],[26.0,20.0,0.0],[55.0,40.0,1.0],[55.0,35.0,0.0],[50.0,30.0,0.0],[51.0,48.0,0.0],[43.0,30.0,1.0],[44.0,72.0,0.0],[28.0,48.0,1.0],[40.0,30.0,1.0],[23.0,48.0,0.0],[74.0,56.0,1.0],[32.0,40.0,0.0],[65.0,36.0,0.0],[45.0,55.0,0.0],[42.0,40.0,0.0],[23.0,24.0,1.0],[35.0,48.0,0.0],[46.0,35.0,0.0],[55.0,20.0,1.0],[30.0,30.0,0.0],[41.0,40.0,0.0],[48.0,48.0,1.0],[27.0,25.0,1.0],[28.0,40.0,1.0],[40.0,39.0,1.0],[22.0,12.0,1.0],[66.0,30.0,0.0],[39.0,84.0,0.0],[23.0,40.0,1.0],[30.0,30.0,0.0],[27.0,30.0,0.0],[31.0,46.0,1.0],[36.0,0.0,1.0],[58.0,44.0,0.0],[21.0,9.0,1.0],[29.0,48.0,0.0],[35.0,20.0,1.0],[51.0,56.0,1.0],[28.0,40.0,0.0],[22.0,20.0,1.0],[46.0,20.0,1.0],[28.0,25.0,1.0],[22.0,20.0,1.0],[41.0,40.0,0.0],[44.0,20.0,1.0],[63.0,40.0,0.0],[61.0,36.0,1.0],[26.0,40.0,0.0],[36.0,48.0,1.0],[62.0,30.0,0.0],[38.0,30.0,0.0],[35.0,40.0,0.0],[26.0,36.0,1.0],[21.0,20.0,1.0],[36.0,25.0,1.0],[28.0,48.0,0.0],[60.0,30.0,0.0],[28.0,40.0,1.0],[57.0,40.0,0.0],[43.0,48.0,0.0],[33.0,30.0,1.0],[48.0,24.0,0.0],[21.0,20.0,1.0],[47.0,45.0,0.0],[30.0,16.0,1.0],[39.0,25.0,0.0],[38.0,0.0,0.0],[35.0,18.0,0.0],[45.0,9.0,1.0],[20.0,36.0,1.0],[54.0,30.0,0.0],[24.0,48.0,0.0],[36.0,48.0,0.0],[66.0,35.0,1.0],[23.0,44.0,0.0],[28.0,48.0,0.0],[48.0,60.0,0.0],[28.0,40.0,1.0],[20.0,36.0,0.0],[53.0,35.0,0.0],[40.0,54.0,0.0],[27.0,30.0,0.0],[42.0,40.0,0.0],[39.0,40.0,1.0],[26.0,48.0,0.0],[42.0,45.0,1.0],[51.0,30.0,1.0],[38.0,40.0,1.0],[27.0,40.0,0.0],[46.0,48.0,0.0],[37.0,12.0,1.0],[45.0,0.0,0.0],[39.0,48.0,0.0],[35.0,40.0,0.0],[27.0,9.0,1.0],[45.0,50.0,0.0],[31.0,40.0,0.0],[30.0,56.0,0.0],[49.0,45.0,0.0],[35.0,0.0,0.0],[47.0,48.0,1.0],[26.0,44.0,0.0],[38.0,36.0,1.0],[31.0,25.0,1.0],[50.0,70.0,1.0],[36.0,50.0,1.0],[46.0,54.0,1.0],[39.0,40.0,0.0],[42.0,46.0,0.0],[51.0,30.0,0.0],[43.0,30.0,0.0],[29.0,45.0,1.0],[55.0,24.0,0.0],[50.0,44.0,0.0],[29.0,48.0,0.0],[31.0,18.0,1.0],[59.0,30.0,0.0],[26.0,32.0,1.0],[29.0,48.0,1.0],[20.0,50.0,1.0],[33.0,48.0,0.0],[47.0,40.0,0.0],[25.0,24.0,0.0],[37.0,48.0,1.0],[26.0,20.0,1.0],[32.0,40.0,0.0],[49.0,0.0,0.0],[29.0,10.0,1.0],[38.0,56.0,0.0],[53.0,30.0,0.0],[59.0,30.0,1.0],[28.0,0.0,1.0],[28.0,20.0,1.0],[36.0,30.0,0.0],[55.0,48.0,0.0],[30.0,40.0,0.0],[51.0,40.0,0.0],[25.0,45.0,0.0],[57.0,18.0,0.0],[21.0,40.0,1.0],[48.0,54.0,0.0],[30.0,14.0,1.0],[60.0,40.0,0.0],[20.0,30.0,0.0],[21.0,60.0,1.0],[47.0,40.0,0.0],[39.0,30.0,0.0],[52.0,20.0,1.0],[55.0,0.0,0.0],[23.0,42.0,1.0],[34.0,30.0,0.0],[36.0,30.0,0.0],[55.0,0.0,1.0],[33.0,54.0,0.0],[55.0,12.0,0.0],[39.0,40.0,0.0],[38.0,0.0,0.0],[45.0,10.0,1.0],[43.0,0.0,0.0],[42.0,25.0,0.0],[43.0,40.0,0.0],[50.0,36.0,1.0],[18.0,6.0,1.0],[36.0,72.0,1.0],[40.0,70.0,0.0],[48.0,30.0,1.0],[59.0,35.0,0.0],[54.0,20.0,1.0],[61.0,30.0,0.0],[32.0,18.0,0.0],[48.0,60.0,1.0],[48.0,40.0,0.0],[50.0,54.0,0.0],[30.0,8.0,1.0],[27.0,6.0,1.0],[45.0,36.0,0.0],[58.0,30.0,0.0],[27.0,45.0,1.0],[41.0,15.0,1.0],[42.0,24.0,0.0],[41.0,40.0,0.0],[57.0,40.0,0.0],[30.0,30.0,1.0],[51.0,0.0,1.0],[31.0,9.0,0.0],[36.0,24.0,0.0],[52.0,24.0,1.0],[41.0,12.0,1.0],[33.0,48.0,0.0],[46.0,0.0,0.0],[35.0,9.0,1.0],[27.0,30.0,1.0],[58.0,40.0,0.0],[34.0,40.0,0.0],[47.0,36.0,0.0],[32.0,30.0,1.0],[47.0,30.0,1.0],[23.0,15.0,1.0],[48.0,30.0,0.0],[44.0,45.0,0.0],[20.0,0.0,1.0],[24.0,28.0,1.0],[71.0,60.0,1.0],[54.0,40.0,0.0],[40.0,48.0,0.0],[28.0,20.0,1.0],[31.0,40.0,1.0],[39.0,40.0,0.0],[31.0,0.0,0.0],[23.0,14.0,1.0],[27.0,20.0,1.0],[40.0,48.0,1.0],[45.0,32.0,0.0],[72.0,56.0,1.0],[21.0,48.0,1.0],[39.0,25.0,1.0],[41.0,60.0,0.0],[24.0,60.0,1.0],[28.0,40.0,1.0],[47.0,48.0,0.0],[58.0,45.0,0.0],[48.0,60.0,0.0],[60.0,30.0,1.0],[36.0,44.0,0.0],[21.0,48.0,1.0],[46.0,48.0,1.0],[21.0,20.0,1.0],[31.0,48.0,0.0],[29.0,63.0,0.0],[26.0,25.0,1.0],[48.0,30.0,0.0],[27.0,54.0,0.0],[44.0,45.0,0.0],[55.0,56.0,1.0],[36.0,0.0,0.0],[41.0,12.0,0.0],[39.0,30.0,0.0],[54.0,40.0,0.0],[24.0,25.0,0.0],[52.0,35.0,0.0],[45.0,18.0,0.0],[27.0,50.0,0.0],[21.0,48.0,1.0],[50.0,45.0,0.0],[24.0,30.0,0.0],[54.0,30.0,0.0],[40.0,25.0,0.0],[39.0,40.0,0.0],[44.0,16.0,1.0],[55.0,40.0,0.0],[63.0,27.0,0.0],[44.0,44.0,0.0],[42.0,24.0,1.0],[33.0,20.0,1.0],[33.0,25.0,0.0],[28.0,56.0,1.0],[29.0,40.0,1.0],[26.0,44.0,1.0],[23.0,45.0,1.0],[31.0,30.0,0.0],[24.0,48.0,0.0],[59.0,24.0,1.0],[27.0,35.0,1.0],[40.0,40.0,0.0],[24.0,30.0,0.0],[35.0,24.0,1.0],[27.0,25.0,1.0],[29.0,44.0,1.0],[58.0,9.0,1.0],[60.0,44.0,0.0],[39.0,35.0,0.0],[47.0,18.0,0.0],[39.0,25.0,1.0],[26.0,40.0,0.0],[56.0,56.0,0.0],[21.0,30.0,1.0],[45.0,48.0,1.0],[26.0,48.0,0.0],[64.0,38.0,0.0],[40.0,60.0,0.0],[42.0,4.0,1.0],[47.0,60.0,1.0],[27.0,40.0,0.0],[43.0,36.0,1.0],[28.0,39.0,1.0],[42.0,16.0,1.0],[25.0,55.0,1.0],[39.0,30.0,0.0],[61.0,78.0,0.0],[40.0,56.0,0.0],[46.0,84.0,1.0],[25.0,16.0,1.0],[25.0,48.0,0.0],[34.0,60.0,0.0],[31.0,35.0,0.0],[36.0,44.0,0.0],[36.0,36.0,0.0],[19.0,35.0,1.0],[57.0,48.0,0.0],[31.0,60.0,1.0],[41.0,48.0,0.0],[38.0,30.0,0.0],[58.0,16.0,0.0],[50.0,40.0,0.0],[38.0,40.0,0.0],[65.0,40.0,0.0],[26.0,30.0,1.0],[47.0,30.0,0.0],[67.0,40.0,1.0],[56.0,16.0,1.0],[41.0,44.0,0.0],[45.0,30.0,0.0],[43.0,32.0,1.0],[22.0,44.0,0.0],[22.0,30.0,1.0],[38.0,40.0,1.0],[49.0,84.0,1.0],[52.0,63.0,1.0],[56.0,72.0,1.0],[56.0,45.0,0.0],[28.0,36.0,0.0],[22.0,56.0,1.0],[50.0,40.0,1.0],[60.0,40.0,0.0],[22.0,24.0,1.0],[32.0,38.0,0.0],[49.0,48.0,0.0],[21.0,30.0,1.0],[25.0,54.0,1.0],[44.0,35.0,0.0],[63.0,36.0,0.0],[59.0,48.0,0.0],[54.0,36.0,0.0],[29.0,24.0,0.0],[20.0,49.0,0.0],[39.0,25.0,0.0],[46.0,32.0,0.0],[52.0,40.0,0.0],[45.0,36.0,0.0],[37.0,20.0,1.0],[35.0,54.0,0.0],[34.0,40.0,0.0],[18.0,12.0,1.0],[21.0,40.0,0.0],[46.0,25.0,0.0],[50.0,48.0,0.0],[46.0,30.0,0.0],[71.0,35.0,0.0],[28.0,30.0,0.0],[52.0,48.0,0.0],[44.0,40.0,0.0],[51.0,23.0,0.0],[44.0,26.0,1.0],[50.0,40.0,0.0],[22.0,40.0,0.0],[58.0,40.0,0.0],[46.0,40.0,0.0],[28.0,21.0,1.0],[24.0,32.0,1.0],[63.0,35.0,0.0],[27.0,24.0,1.0],[51.0,45.0,0.0],[51.0,40.0,0.0],[38.0,40.0,0.0],[41.0,40.0,0.0],[63.0,7.0,1.0],[43.0,60.0,0.0],[39.0,54.0,0.0],[25.0,40.0,0.0],[43.0,27.0,0.0],[25.0,35.0,1.0],[35.0,30.0,1.0],[49.0,35.0,0.0],[57.0,48.0,1.0],[38.0,25.0,1.0],[54.0,30.0,0.0],[24.0,0.0,1.0],[42.0,72.0,0.0],[35.0,24.0,1.0],[52.0,30.0,0.0],[15.0,12.0,1.0],[64.0,45.0,0.0],[50.0,24.0,0.0],[35.0,42.0,0.0],[47.0,24.0,0.0],[24.0,48.0,0.0],[42.0,56.0,1.0],[37.0,45.0,0.0],[38.0,18.0,1.0],[32.0,40.0,0.0],[20.0,40.0,1.0],[48.0,48.0,0.0],[49.0,45.0,0.0],[55.0,84.0,1.0],[31.0,36.0,0.0],[38.0,48.0,0.0],[68.0,12.0,1.0],[39.0,66.0,0.0],[47.0,0.0,0.0],[45.0,24.0,1.0],[40.0,15.0,1.0],[31.0,30.0,1.0],[30.0,45.0,1.0],[48.0,36.0,1.0],[24.0,54.0,1.0],[23.0,30.0,0.0],[37.0,32.0,0.0],[36.0,40.0,0.0],[46.0,30.0,0.0],[44.0,48.0,0.0],[28.0,25.0,1.0],[45.0,48.0,0.0],[38.0,42.0,0.0],[56.0,45.0,0.0],[31.0,40.0,0.0],[46.0,6.0,1.0],[25.0,48.0,0.0],[58.0,50.0,0.0],[24.0,0.0,1.0],[21.0,40.0,1.0],[52.0,48.0,0.0],[45.0,20.0,0.0],[34.0,9.0,1.0],[25.0,40.0,0.0],[30.0,20.0,1.0],[22.0,40.0,1.0],[29.0,45.0,1.0],[21.0,20.0,1.0],[39.0,32.0,0.0],[27.0,72.0,1.0],[64.0,4.0,1.0],[44.0,48.0,0.0],[47.0,40.0,0.0],[32.0,24.0,1.0],[41.0,54.0,0.0],[59.0,30.0,1.0],[62.0,40.0,0.0],[20.0,60.0,1.0],[28.0,10.0,0.0],[33.0,42.0,0.0],[31.0,20.0,1.0],[58.0,36.0,1.0],[41.0,30.0,0.0],[59.0,48.0,0.0],[51.0,0.0,0.0],[56.0,45.0,0.0],[26.0,45.0,0.0],[45.0,40.0,1.0],[28.0,36.0,0.0],[42.0,18.0,0.0],[38.0,60.0,1.0],[29.0,15.0,1.0],[22.0,48.0,1.0],[21.0,12.0,1.0],[65.0,18.0,1.0],[57.0,35.0,0.0],[52.0,48.0,0.0],[42.0,40.0,1.0],[39.0,24.0,1.0],[60.0,48.0,1.0],[28.0,10.0,1.0],[31.0,6.0,1.0],[47.0,48.0,0.0],[87.0,6.0,0.0],[42.0,20.0,0.0],[28.0,48.0,1.0],[34.0,72.0,0.0],[52.0,0.0,0.0],[47.0,22.0,0.0],[29.0,3.0,1.0],[43.0,72.0,0.0],[29.0,40.0,0.0],[34.0,48.0,1.0],[45.0,30.0,1.0],[47.0,54.0,0.0],[38.0,24.0,0.0],[39.0,12.0,1.0],[43.0,0.0,0.0],[30.0,36.0,1.0],[33.0,35.0,1.0],[33.0,56.0,0.0],[30.0,20.0,1.0],[30.0,30.0,0.0],[54.0,35.0,0.0],[50.0,45.0,0.0],[29.0,12.0,0.0],[55.0,40.0,1.0],[58.0,45.0,1.0],[55.0,50.0,1.0],[56.0,15.0,0.0],[45.0,48.0,0.0],[34.0,45.0,0.0],[41.0,35.0,0.0],[50.0,30.0,0.0],[30.0,40.0,0.0],[34.0,30.0,1.0],[35.0,30.0,0.0],[52.0,30.0,0.0],[36.0,48.0,0.0],[27.0,24.0,1.0],[46.0,48.0,1.0],[59.0,45.0,0.0],[39.0,48.0,0.0],[63.0,30.0,0.0],[65.0,0.0,0.0],[49.0,39.0,0.0],[22.0,48.0,1.0],[39.0,48.0,0.0],[30.0,40.0,1.0],[62.0,5.0,1.0],[49.0,30.0,0.0],[47.0,56.0,0.0],[57.0,0.0,0.0],[47.0,40.0,0.0],[55.0,35.0,0.0],[30.0,12.0,0.0],[37.0,30.0,0.0],[30.0,48.0,0.0],[35.0,30.0,1.0],[50.0,0.0,0.0],[26.0,20.0,0.0],[26.0,4.0,1.0],[30.0,48.0,1.0],[51.0,15.0,1.0],[21.0,24.0,1.0],[44.0,48.0,0.0],[51.0,36.0,0.0],[55.0,40.0,0.0],[48.0,30.0,0.0],[77.0,20.0,1.0],[54.0,40.0,0.0],[54.0,0.0,1.0],[30.0,40.0,0.0],[21.0,48.0,0.0],[48.0,30.0,0.0],[51.0,20.0,0.0],[36.0,20.0,1.0],[64.0,40.0,0.0],[52.0,30.0,0.0],[34.0,48.0,0.0],[48.0,0.0,0.0],[58.0,48.0,0.0],[21.0,40.0,1.0],[62.0,30.0,0.0],[35.0,40.0,0.0],[40.0,30.0,0.0],[26.0,45.0,1.0],[42.0,60.0,1.0],[31.0,54.0,0.0],[25.0,20.0,1.0],[32.0,40.0,0.0],[55.0,40.0,0.0],[22.0,60.0,0.0],[33.0,48.0,0.0],[43.0,8.0,0.0],[20.0,23.0,0.0],[44.0,50.0,0.0],[43.0,30.0,0.0],[46.0,50.0,0.0],[47.0,20.0,0.0],[32.0,20.0,1.0],[24.0,24.0,1.0],[47.0,49.0,1.0],[19.0,48.0,1.0],[44.0,45.0,0.0],[32.0,40.0,0.0],[22.0,44.0,1.0],[43.0,30.0,1.0],[48.0,40.0,1.0],[28.0,25.0,0.0],[65.0,30.0,0.0],[34.0,0.0,0.0],[41.0,40.0,0.0],[23.0,42.0,1.0],[64.0,40.0,0.0],[26.0,48.0,1.0],[45.0,40.0,0.0],[29.0,20.0,0.0],[36.0,60.0,0.0],[45.0,20.0,0.0],[36.0,24.0,0.0],[32.0,40.0,0.0],[39.0,30.0,0.0],[34.0,48.0,0.0],[19.0,40.0,0.0],[23.0,40.0,0.0],[53.0,84.0,1.0],[55.0,56.0,1.0],[27.0,20.0,0.0],[43.0,32.0,0.0],[40.0,36.0,0.0],[34.0,48.0,0.0],[24.0,36.0,1.0],[39.0,40.0,1.0],[38.0,35.0,0.0],[53.0,30.0,0.0],[38.0,40.0,0.0],[25.0,1.0,1.0],[42.0,0.0,0.0],[38.0,24.0,1.0],[29.0,48.0,1.0],[29.0,40.0,0.0],[48.0,20.0,0.0],[54.0,44.0,1.0],[35.0,30.0,1.0],[23.0,15.0,1.0],[44.0,6.0,0.0],[23.0,36.0,1.0],[48.0,30.0,0.0],[41.0,48.0,0.0],[36.0,45.0,0.0],[58.0,25.0,1.0],[38.0,0.0,0.0],[26.0,18.0,1.0],[42.0,40.0,0.0],[45.0,12.0,1.0],[55.0,30.0,1.0],[51.0,30.0,0.0],[26.0,12.0,1.0],[26.0,24.0,1.0],[52.0,9.0,1.0],[32.0,34.0,1.0],[51.0,24.0,0.0],[35.0,48.0,1.0],[51.0,20.0,0.0],[58.0,30.0,0.0],[37.0,36.0,1.0],[68.0,30.0,0.0],[51.0,20.0,0.0],[39.0,56.0,1.0],[36.0,42.0,1.0],[32.0,50.0,0.0],[27.0,36.0,1.0],[21.0,32.0,0.0],[55.0,16.0,0.0],[46.0,35.0,0.0],[49.0,35.0,0.0],[32.0,40.0,1.0],[38.0,32.0,0.0],[41.0,60.0,1.0],[44.0,30.0,0.0],[23.0,40.0,0.0],[19.0,30.0,1.0],[29.0,30.0,0.0],[33.0,3.0,1.0],[63.0,30.0,0.0],[53.0,20.0,1.0],[29.0,44.0,0.0],[26.0,28.0,0.0],[29.0,32.0,1.0],[19.0,30.0,1.0],[33.0,20.0,1.0],[31.0,24.0,1.0],[20.0,20.0,0.0],[47.0,35.0,0.0],[46.0,48.0,0.0],[43.0,44.0,0.0],[65.0,0.0,0.0],[26.0,24.0,1.0],[39.0,24.0,0.0],[32.0,0.0,0.0],[39.0,0.0,1.0],[55.0,30.0,0.0],[33.0,40.0,0.0],[31.0,40.0,0.0],[59.0,75.0,0.0],[25.0,44.0,1.0],[22.0,36.0,1.0],[59.0,40.0,0.0],[24.0,30.0,0.0],[25.0,72.0,0.0],[45.0,35.0,0.0],[28.0,24.0,1.0],[53.0,25.0,0.0],[29.0,30.0,0.0],[36.0,60.0,0.0],[52.0,40.0,0.0],[44.0,40.0,0.0],[51.0,30.0,0.0],[33.0,5.0,1.0],[37.0,24.0,0.0],[23.0,40.0,0.0],[30.0,48.0,1.0],[53.0,40.0,0.0],[55.0,40.0,0.0],[21.0,48.0,1.0],[40.0,54.0,1.0],[27.0,48.0,0.0],[24.0,24.0,1.0],[45.0,40.0,0.0],[44.0,48.0,0.0],[42.0,50.0,0.0],[49.0,40.0,0.0],[44.0,54.0,0.0],[45.0,48.0,0.0],[59.0,18.0,0.0],[35.0,40.0,0.0],[26.0,40.0,0.0],[28.0,30.0,0.0],[50.0,40.0,0.0],[30.0,58.0,1.0],[25.0,40.0,0.0],[64.0,30.0,0.0],[38.0,48.0,1.0],[57.0,30.0,0.0],[29.0,40.0,0.0],[44.0,48.0,0.0],[43.0,35.0,0.0],[27.0,44.0,1.0],[35.0,30.0,0.0],[40.0,44.0,1.0],[46.0,40.0,0.0],[38.0,72.0,0.0],[24.0,44.0,1.0],[56.0,35.0,0.0],[23.0,24.0,0.0],[35.0,0.0,0.0],[34.0,40.0,0.0],[43.0,20.0,0.0],[39.0,30.0,0.0],[34.0,40.0,0.0],[37.0,40.0,0.0],[34.0,50.0,1.0],[49.0,40.0,0.0],[20.0,40.0,1.0],[42.0,30.0,0.0],[58.0,60.0,1.0],[44.0,48.0,0.0],[24.0,20.0,1.0],[40.0,16.0,1.0],[56.0,48.0,0.0],[42.0,20.0,0.0],[40.0,60.0,0.0],[33.0,40.0,1.0],[58.0,16.0,0.0],[40.0,35.0,1.0],[41.0,40.0,0.0],[50.0,20.0,0.0],[34.0,44.0,0.0],[47.0,35.0,0.0],[34.0,45.0,0.0],[53.0,25.0,0.0],[27.0,60.0,1.0],[21.0,51.0,1.0],[58.0,18.0,1.0],[45.0,30.0,0.0],[33.0,40.0,1.0],[31.0,6.0,1.0],[60.0,40.0,0.0],[45.0,40.0,0.0],[34.0,36.0,1.0],[36.0,32.0,0.0],[40.0,20.0,0.0],[50.0,48.0,1.0],[47.0,72.0,0.0],[45.0,40.0,1.0],[24.0,30.0,0.0],[28.0,54.0,1.0],[31.0,60.0,0.0],[18.0,40.0,0.0],[25.0,40.0,0.0],[46.0,36.0,0.0],[62.0,10.0,1.0],[36.0,25.0,0.0],[57.0,40.0,0.0],[46.0,48.0,0.0],[34.0,40.0,0.0],[56.0,15.0,1.0],[35.0,40.0,0.0],[19.0,30.0,1.0],[58.0,6.0,1.0],[57.0,40.0,0.0],[42.0,0.0,0.0],[33.0,48.0,1.0],[56.0,36.0,0.0],[40.0,0.0,0.0],[20.0,30.0,1.0],[34.0,20.0,0.0],[20.0,40.0,1.0],[47.0,40.0,0.0],[48.0,40.0,0.0],[51.0,25.0,1.0],[54.0,40.0,0.0],[46.0,30.0,1.0],[34.0,48.0,0.0],[42.0,12.0,1.0],[21.0,12.0,1.0],[27.0,40.0,1.0],[43.0,40.0,0.0],[58.0,30.0,1.0],[23.0,25.0,1.0],[35.0,32.0,1.0],[39.0,48.0,0.0],[29.0,20.0,1.0],[37.0,48.0,1.0],[20.0,50.0,1.0],[45.0,5.0,1.0],[48.0,40.0,0.0],[51.0,22.0,0.0],[22.0,12.0,1.0],[26.0,48.0,0.0],[49.0,40.0,0.0],[25.0,48.0,0.0],[25.0,30.0,1.0],[48.0,48.0,1.0],[23.0,12.0,1.0],[33.0,40.0,1.0],[41.0,60.0,0.0],[47.0,25.0,0.0],[30.0,50.0,1.0],[49.0,30.0,1.0],[46.0,40.0,1.0],[37.0,35.0,0.0],[31.0,20.0,1.0],[56.0,45.0,0.0],[30.0,48.0,0.0],[33.0,54.0,0.0],[46.0,24.0,1.0],[27.0,45.0,0.0],[58.0,40.0,0.0],[46.0,4.0,0.0],[45.0,37.0,0.0],[49.0,40.0,0.0],[36.0,30.0,0.0],[44.0,40.0,0.0],[44.0,40.0,0.0],[32.0,40.0,1.0],[26.0,0.0,0.0],[26.0,40.0,0.0],[24.0,12.0,1.0],[51.0,30.0,0.0],[53.0,5.0,1.0],[61.0,0.0,0.0],[42.0,40.0,0.0],[37.0,25.0,0.0],[35.0,30.0,0.0],[46.0,24.0,0.0],[58.0,6.0,1.0],[57.0,35.0,0.0],[28.0,36.0,0.0],[27.0,48.0,0.0],[55.0,10.0,1.0],[37.0,40.0,0.0],[24.0,48.0,0.0],[36.0,24.0,0.0],[23.0,20.0,1.0],[24.0,27.0,1.0],[60.0,40.0,0.0],[64.0,40.0,0.0],[32.0,30.0,1.0],[43.0,12.0,0.0],[24.0,32.0,1.0],[43.0,40.0,0.0],[45.0,50.0,0.0],[27.0,48.0,0.0],[29.0,48.0,1.0],[45.0,48.0,0.0],[22.0,48.0,0.0],[61.0,18.0,1.0],[30.0,40.0,0.0],[24.0,48.0,0.0],[32.0,30.0,0.0],[57.0,44.0,0.0],[34.0,24.0,1.0],[26.0,56.0,1.0],[65.0,30.0,0.0],[31.0,42.0,1.0],[48.0,25.0,0.0],[29.0,4.0,1.0],[40.0,12.0,1.0],[34.0,40.0,0.0],[39.0,35.0,0.0],[26.0,40.0,0.0],[33.0,35.0,1.0],[50.0,50.0,0.0],[37.0,40.0,0.0],[26.0,24.0,1.0],[23.0,15.0,1.0],[36.0,48.0,0.0],[42.0,44.0,0.0],[48.0,40.0,0.0],[53.0,12.0,1.0],[30.0,40.0,0.0],[56.0,40.0,0.0],[31.0,42.0,0.0],[24.0,52.0,1.0],[35.0,48.0,0.0],[36.0,0.0,0.0],[50.0,48.0,0.0],[35.0,12.0,0.0],[49.0,40.0,0.0],[40.0,18.0,0.0],[44.0,20.0,1.0],[47.0,25.0,0.0],[31.0,45.0,0.0],[47.0,60.0,0.0],[65.0,40.0,0.0],[27.0,35.0,1.0],[58.0,42.0,1.0],[25.0,20.0,0.0],[49.0,20.0,1.0],[37.0,40.0,0.0],[34.0,66.0,0.0],[44.0,40.0,0.0],[32.0,24.0,0.0],[20.0,48.0,1.0],[23.0,25.0,1.0],[28.0,24.0,1.0],[20.0,12.0,1.0],[33.0,25.0,0.0],[37.0,8.0,1.0],[33.0,20.0,1.0],[51.0,45.0,0.0],[43.0,31.0,0.0],[54.0,50.0,0.0],[56.0,18.0,0.0],[38.0,36.0,1.0],[58.0,30.0,0.0],[43.0,0.0,0.0],[53.0,18.0,0.0],[35.0,30.0,1.0],[39.0,40.0,1.0],[21.0,20.0,1.0],[26.0,48.0,1.0],[32.0,48.0,0.0],[34.0,30.0,1.0],[63.0,35.0,0.0],[32.0,40.0,1.0],[32.0,0.0,0.0],[34.0,40.0,0.0],[47.0,36.0,1.0],[52.0,42.0,0.0],[53.0,36.0,1.0],[38.0,25.0,1.0],[53.0,32.0,0.0],[28.0,40.0,0.0],[54.0,56.0,0.0],[50.0,36.0,1.0],[73.0,4.0,1.0],[58.0,48.0,0.0],[18.0,56.0,1.0],[44.0,48.0,0.0],[42.0,20.0,0.0],[36.0,40.0,0.0],[56.0,90.0,1.0],[45.0,40.0,0.0],[21.0,30.0,0.0],[26.0,54.0,1.0],[42.0,42.0,0.0],[60.0,0.0,0.0],[65.0,30.0,0.0],[31.0,42.0,0.0],[48.0,48.0,0.0],[63.0,10.0,0.0],[36.0,0.0,0.0],[39.0,45.0,0.0],[65.0,35.0,0.0],[22.0,20.0,0.0],[62.0,30.0,0.0],[35.0,0.0,0.0],[42.0,40.0,0.0],[68.0,0.0,0.0],[43.0,40.0,0.0],[36.0,40.0,0.0],[44.0,56.0,0.0],[60.0,35.0,0.0],[62.0,36.0,1.0],[25.0,46.0,1.0],[21.0,20.0,1.0],[27.0,48.0,1.0],[23.0,20.0,0.0],[64.0,32.0,0.0],[30.0,30.0,1.0],[39.0,20.0,0.0],[38.0,24.0,0.0],[40.0,46.0,0.0],[30.0,30.0,1.0],[34.0,91.0,1.0],[40.0,48.0,1.0],[33.0,40.0,1.0],[32.0,30.0,0.0],[23.0,8.0,1.0],[41.0,84.0,0.0],[57.0,0.0,0.0],[35.0,54.0,0.0],[48.0,12.0,0.0],[53.0,56.0,0.0],[23.0,20.0,0.0],[37.0,35.0,0.0],[41.0,40.0,0.0],[46.0,30.0,1.0],[55.0,45.0,0.0],[29.0,40.0,0.0],[22.0,70.0,1.0],[21.0,12.0,1.0],[47.0,18.0,1.0],[52.0,8.0,1.0],[43.0,24.0,0.0],[25.0,40.0,1.0],[27.0,20.0,0.0],[35.0,35.0,1.0],[52.0,0.0,0.0],[28.0,84.0,0.0],[27.0,48.0,0.0],[45.0,20.0,1.0],[21.0,24.0,1.0],[26.0,48.0,1.0],[37.0,40.0,0.0],[45.0,30.0,0.0],[58.0,30.0,0.0],[34.0,18.0,0.0],[32.0,40.0,0.0],[32.0,56.0,1.0],[42.0,30.0,0.0],[34.0,50.0,0.0],[57.0,30.0,0.0],[40.0,30.0,0.0],[65.0,35.0,0.0],[43.0,20.0,0.0],[74.0,18.0,1.0],[23.0,60.0,0.0],[58.0,20.0,1.0],[50.0,54.0,0.0],[58.0,35.0,0.0],[76.0,35.0,1.0],[22.0,12.0,1.0],[39.0,40.0,0.0],[51.0,7.0,0.0],[35.0,25.0,1.0],[32.0,32.0,0.0],[40.0,35.0,0.0],[47.0,30.0,0.0],[22.0,12.0,1.0],[23.0,42.0,1.0],[48.0,60.0,1.0],[31.0,40.0,1.0],[20.0,20.0,1.0],[46.0,54.0,0.0],[36.0,40.0,1.0],[34.0,60.0,1.0],[27.0,70.0,0.0],[69.0,45.0,0.0],[46.0,30.0,0.0],[28.0,30.0,1.0],[33.0,56.0,0.0],[46.0,40.0,0.0],[34.0,35.0,1.0],[40.0,40.0,0.0],[57.0,32.0,1.0],[60.0,31.0,1.0],[52.0,24.0,1.0],[20.0,36.0,0.0],[47.0,25.0,0.0],[37.0,40.0,1.0],[39.0,40.0,0.0],[66.0,42.0,0.0],[29.0,16.0,1.0],[48.0,30.0,0.0],[25.0,20.0,1.0],[21.0,22.0,1.0],[22.0,48.0,0.0],[29.0,12.0,1.0],[21.0,40.0,1.0],[28.0,48.0,1.0],[62.0,20.0,0.0],[22.0,40.0,0.0],[30.0,30.0,0.0],[21.0,24.0,1.0],[27.0,48.0,1.0],[46.0,35.0,1.0],[35.0,0.0,0.0],[37.0,37.0,0.0],[36.0,48.0,0.0],[56.0,48.0,0.0],[49.0,72.0,0.0],[35.0,50.0,0.0],[34.0,48.0,1.0],[54.0,36.0,1.0],[28.0,40.0,0.0],[47.0,50.0,0.0],[32.0,60.0,0.0],[53.0,30.0,0.0],[60.0,25.0,0.0],[63.0,25.0,1.0],[47.0,48.0,1.0],[36.0,20.0,0.0],[24.0,48.0,1.0],[41.0,54.0,0.0],[30.0,40.0,1.0],[52.0,48.0,0.0],[38.0,40.0,0.0],[39.0,15.0,1.0],[28.0,48.0,0.0],[54.0,25.0,0.0],[62.0,12.0,1.0],[35.0,35.0,0.0],[40.0,40.0,1.0],[39.0,48.0,0.0],[21.0,35.0,1.0],[29.0,36.0,1.0],[38.0,35.0,1.0],[30.0,48.0,1.0],[55.0,40.0,0.0],[34.0,48.0,0.0],[36.0,40.0,0.0],[28.0,30.0,1.0],[32.0,48.0,0.0],[34.0,40.0,0.0],[37.0,48.0,1.0],[24.0,30.0,1.0],[61.0,0.0,0.0],[39.0,0.0,1.0],[22.0,48.0,0.0],[48.0,25.0,0.0],[24.0,25.0,1.0],[37.0,48.0,0.0],[20.0,4.0,1.0],[43.0,40.0,0.0],[37.0,20.0,0.0],[29.0,40.0,0.0],[27.0,40.0,1.0],[32.0,40.0,0.0],[41.0,0.0,1.0],[29.0,40.0,0.0],[55.0,0.0,0.0],[36.0,35.0,0.0],[30.0,72.0,0.0],[48.0,24.0,1.0],[31.0,0.0,1.0],[39.0,20.0,1.0],[43.0,20.0,0.0],[30.0,44.0,0.0],[20.0,9.0,1.0],[49.0,56.0,1.0],[32.0,12.0,0.0],[59.0,30.0,0.0],[25.0,20.0,1.0],[38.0,32.0,1.0],[40.0,32.0,1.0],[30.0,0.0,1.0],[28.0,48.0,0.0],[42.0,0.0,0.0],[42.0,36.0,0.0],[52.0,35.0,1.0],[50.0,48.0,0.0],[42.0,48.0,0.0],[62.0,40.0,0.0],[29.0,48.0,0.0],[25.0,30.0,1.0],[30.0,48.0,0.0],[48.0,40.0,0.0],[48.0,24.0,0.0],[45.0,45.0,0.0],[88.0,16.0,0.0],[43.0,35.0,0.0],[70.0,18.0,1.0],[45.0,30.0,0.0],[42.0,56.0,0.0],[37.0,40.0,1.0],[34.0,40.0,1.0],[21.0,25.0,0.0],[46.0,48.0,0.0],[46.0,45.0,0.0],[53.0,0.0,0.0],[43.0,25.0,0.0],[27.0,60.0,0.0],[27.0,32.0,1.0],[46.0,44.0,0.0],[41.0,45.0,0.0],[48.0,64.0,0.0],[29.0,48.0,1.0],[49.0,0.0,0.0],[28.0,66.0,0.0],[61.0,21.0,1.0],[40.0,15.0,0.0],[38.0,36.0,1.0],[39.0,48.0,1.0],[26.0,50.0,0.0],[34.0,6.0,1.0],[60.0,30.0,0.0],[43.0,40.0,0.0],[34.0,30.0,0.0],[30.0,40.0,0.0],[27.0,60.0,1.0],[46.0,32.0,1.0],[44.0,30.0,0.0],[23.0,36.0,1.0],[30.0,48.0,0.0],[57.0,40.0,0.0],[49.0,45.0,0.0],[60.0,40.0,0.0],[54.0,54.0,0.0],[63.0,35.0,0.0],[32.0,8.0,1.0],[40.0,48.0,0.0],[30.0,45.0,0.0],[45.0,25.0,0.0],[36.0,54.0,0.0],[24.0,48.0,1.0],[51.0,48.0,0.0],[57.0,4.0,1.0],[64.0,48.0,0.0],[53.0,35.0,0.0],[32.0,45.0,0.0],[47.0,10.0,1.0],[23.0,18.0,1.0],[37.0,35.0,1.0],[46.0,15.0,1.0],[52.0,20.0,1.0],[35.0,36.0,1.0],[37.0,30.0,1.0],[45.0,48.0,0.0],[39.0,45.0,0.0],[40.0,30.0,1.0],[32.0,10.0,0.0],[59.0,24.0,0.0],[55.0,60.0,0.0],[30.0,48.0,0.0],[40.0,35.0,0.0],[46.0,42.0,1.0],[50.0,15.0,0.0],[60.0,40.0,0.0],[43.0,12.0,0.0],[28.0,30.0,1.0],[45.0,48.0,0.0],[32.0,18.0,1.0],[55.0,30.0,0.0],[43.0,25.0,0.0],[24.0,27.0,1.0],[42.0,0.0,0.0],[56.0,42.0,0.0],[52.0,25.0,0.0],[53.0,30.0,0.0],[48.0,20.0,1.0],[47.0,60.0,0.0],[65.0,25.0,1.0],[21.0,40.0,0.0],[29.0,36.0,1.0],[37.0,31.0,1.0],[46.0,56.0,0.0],[19.0,48.0,1.0],[36.0,0.0,0.0],[29.0,40.0,0.0],[33.0,48.0,0.0],[28.0,40.0,0.0],[37.0,0.0,0.0],[20.0,44.0,1.0],[27.0,55.0,0.0],[50.0,35.0,0.0],[35.0,54.0,0.0],[50.0,40.0,0.0],[63.0,30.0,0.0],[45.0,25.0,0.0],[53.0,30.0,1.0],[50.0,36.0,1.0],[24.0,48.0,1.0],[52.0,48.0,0.0],[55.0,40.0,0.0],[34.0,30.0,0.0],[41.0,72.0,0.0],[56.0,15.0,1.0],[34.0,30.0,0.0],[22.0,18.0,1.0],[40.0,24.0,0.0],[61.0,40.0,1.0],[42.0,32.0,0.0],[40.0,29.0,0.0],[52.0,10.0,1.0],[38.0,56.0,1.0],[55.0,0.0,0.0],[52.0,48.0,1.0],[32.0,42.0,0.0],[32.0,0.0,0.0],[58.0,48.0,0.0],[62.0,30.0,0.0],[37.0,30.0,0.0],[45.0,35.0,0.0],[49.0,40.0,0.0],[30.0,35.0,0.0],[27.0,72.0,1.0],[35.0,10.0,0.0],[41.0,30.0,0.0],[50.0,48.0,0.0],[28.0,36.0,1.0],[44.0,20.0,1.0],[40.0,56.0,0.0],[21.0,30.0,0.0],[54.0,96.0,0.0],[40.0,40.0,0.0],[44.0,48.0,0.0],[37.0,60.0,1.0],[38.0,40.0,0.0],[45.0,52.0,0.0],[26.0,24.0,0.0],[30.0,48.0,0.0],[54.0,40.0,0.0],[30.0,48.0,1.0],[45.0,40.0,0.0],[49.0,54.0,0.0],[25.0,40.0,1.0],[36.0,48.0,0.0],[28.0,24.0,1.0],[23.0,12.0,1.0],[36.0,20.0,1.0],[39.0,40.0,1.0],[30.0,36.0,0.0],[29.0,20.0,1.0],[30.0,48.0,1.0],[62.0,40.0,0.0],[30.0,60.0,0.0],[46.0,32.0,0.0],[60.0,45.0,0.0],[39.0,30.0,0.0],[71.0,24.0,1.0],[52.0,15.0,1.0],[54.0,0.0,0.0],[21.0,45.0,0.0],[44.0,40.0,0.0],[71.0,34.0,1.0],[34.0,48.0,0.0],[32.0,32.0,0.0],[39.0,50.0,1.0],[49.0,60.0,0.0],[34.0,0.0,0.0],[44.0,36.0,0.0],[53.0,48.0,0.0],[27.0,45.0,1.0],[63.0,24.0,1.0],[58.0,15.0,1.0],[40.0,45.0,0.0],[46.0,40.0,0.0],[37.0,6.0,1.0],[43.0,20.0,1.0],[25.0,24.0,1.0],[39.0,48.0,0.0],[39.0,25.0,0.0],[45.0,72.0,0.0],[34.0,48.0,0.0],[42.0,48.0,0.0],[20.0,32.0,0.0],[44.0,64.0,0.0],[62.0,50.0,0.0],[67.0,48.0,0.0],[53.0,48.0,0.0],[39.0,60.0,0.0],[54.0,24.0,1.0],[21.0,20.0,1.0],[38.0,40.0,0.0],[37.0,48.0,0.0],[59.0,60.0,0.0],[29.0,15.0,1.0],[20.0,12.0,1.0],[34.0,20.0,1.0],[31.0,50.0,0.0],[28.0,54.0,0.0],[60.0,30.0,0.0],[50.0,46.0,0.0],[59.0,45.0,1.0],[26.0,15.0,1.0],[27.0,63.0,1.0],[52.0,38.0,1.0],[40.0,48.0,0.0],[31.0,40.0,0.0],[39.0,45.0,0.0],[41.0,36.0,1.0],[42.0,40.0,0.0],[54.0,10.0,1.0],[37.0,0.0,0.0],[24.0,60.0,1.0],[39.0,12.0,1.0],[46.0,48.0,0.0],[37.0,72.0,0.0],[40.0,40.0,0.0],[51.0,30.0,0.0],[32.0,50.0,0.0],[29.0,0.0,1.0],[23.0,20.0,1.0],[38.0,20.0,1.0],[27.0,30.0,1.0],[37.0,4.0,1.0],[33.0,40.0,0.0],[57.0,36.0,0.0],[31.0,14.0,1.0],[58.0,30.0,0.0],[56.0,20.0,0.0],[46.0,30.0,0.0],[36.0,20.0,1.0],[41.0,48.0,0.0],[22.0,30.0,0.0],[37.0,54.0,0.0],[59.0,0.0,0.0],[22.0,40.0,0.0],[24.0,40.0,1.0],[42.0,40.0,0.0],[50.0,0.0,0.0],[44.0,50.0,0.0],[66.0,15.0,1.0],[28.0,48.0,0.0],[29.0,56.0,1.0],[62.0,30.0,0.0],[19.0,48.0,1.0],[72.0,11.0,1.0],[66.0,4.0,1.0],[22.0,48.0,1.0],[27.0,44.0,0.0],[54.0,40.0,0.0],[31.0,48.0,1.0],[27.0,25.0,0.0],[42.0,30.0,0.0],[59.0,30.0,1.0],[22.0,4.0,1.0],[47.0,40.0,1.0],[76.0,40.0,0.0],[57.0,24.0,0.0],[31.0,30.0,0.0],[44.0,36.0,1.0],[27.0,44.0,0.0],[54.0,48.0,0.0],[23.0,44.0,1.0],[50.0,16.0,1.0],[48.0,0.0,0.0],[52.0,0.0,0.0],[36.0,35.0,0.0],[56.0,49.0,0.0],[56.0,60.0,0.0],[35.0,40.0,0.0],[66.0,45.0,0.0],[24.0,29.0,0.0],[42.0,63.0,0.0],[23.0,60.0,1.0],[40.0,48.0,0.0],[29.0,16.0,1.0],[44.0,44.0,0.0],[22.0,40.0,1.0],[55.0,0.0,0.0],[50.0,36.0,0.0],[27.0,60.0,1.0],[56.0,40.0,1.0],[59.0,56.0,1.0],[52.0,40.0,1.0],[56.0,9.0,1.0],[73.0,6.0,1.0],[30.0,30.0,0.0],[33.0,35.0,1.0],[52.0,40.0,1.0],[57.0,30.0,1.0],[25.0,40.0,0.0],[44.0,0.0,0.0],[30.0,0.0,0.0],[50.0,36.0,0.0],[51.0,48.0,0.0],[43.0,48.0,1.0],[55.0,24.0,0.0],[29.0,27.0,1.0],[26.0,48.0,1.0],[31.0,40.0,0.0],[22.0,48.0,1.0],[45.0,34.0,0.0],[40.0,40.0,0.0],[24.0,50.0,0.0],[23.0,24.0,1.0],[20.0,30.0,1.0],[37.0,20.0,0.0],[48.0,50.0,0.0],[46.0,18.0,0.0],[64.0,4.0,0.0],[51.0,12.0,1.0],[20.0,50.0,1.0],[64.0,20.0,1.0],[52.0,48.0,0.0],[58.0,48.0,0.0],[53.0,6.0,1.0],[27.0,45.0,0.0],[32.0,20.0,0.0],[41.0,30.0,1.0],[67.0,45.0,0.0],[30.0,20.0,1.0],[50.0,40.0,0.0],[53.0,20.0,0.0],[19.0,21.0,1.0],[30.0,48.0,0.0],[29.0,45.0,0.0],[19.0,40.0,1.0],[34.0,60.0,0.0],[32.0,24.0,1.0],[40.0,30.0,0.0],[30.0,44.0,0.0],[59.0,40.0,0.0],[27.0,56.0,1.0],[45.0,25.0,0.0],[28.0,40.0,1.0],[26.0,0.0,0.0],[64.0,25.0,0.0],[39.0,30.0,0.0],[48.0,32.0,0.0],[48.0,0.0,1.0],[25.0,24.0,1.0],[32.0,40.0,0.0],[32.0,40.0,0.0],[30.0,40.0,1.0],[51.0,44.0,0.0],[26.0,45.0,1.0],[51.0,0.0,0.0],[54.0,30.0,0.0],[34.0,30.0,0.0],[34.0,48.0,0.0],[52.0,45.0,0.0],[42.0,30.0,0.0],[36.0,45.0,0.0],[60.0,12.0,0.0],[25.0,48.0,1.0],[42.0,54.0,0.0],[26.0,40.0,0.0],[49.0,25.0,0.0],[25.0,48.0,0.0],[42.0,45.0,0.0],[29.0,40.0,0.0],[29.0,42.0,1.0],[24.0,49.0,0.0],[52.0,4.0,1.0],[60.0,20.0,0.0],[45.0,62.0,0.0],[29.0,9.0,1.0],[53.0,30.0,0.0],[57.0,40.0,0.0],[33.0,30.0,0.0],[24.0,15.0,1.0],[46.0,45.0,0.0],[35.0,40.0,0.0],[44.0,48.0,1.0],[31.0,45.0,0.0],[63.0,30.0,0.0],[36.0,40.0,1.0],[41.0,23.0,0.0],[59.0,44.0,0.0],[64.0,30.0,0.0],[50.0,47.0,0.0],[52.0,32.0,0.0],[25.0,40.0,0.0],[54.0,20.0,1.0],[41.0,8.0,1.0],[60.0,48.0,0.0],[25.0,84.0,1.0],[62.0,18.0,1.0],[27.0,0.0,1.0],[42.0,48.0,0.0],[22.0,48.0,1.0],[27.0,50.0,0.0],[34.0,56.0,1.0],[25.0,48.0,0.0],[50.0,40.0,0.0],[31.0,36.0,0.0],[25.0,48.0,1.0],[41.0,40.0,0.0],[53.0,30.0,0.0],[60.0,0.0,0.0],[64.0,30.0,0.0],[46.0,40.0,0.0],[19.0,55.0,0.0],[48.0,39.0,0.0],[34.0,0.0,0.0],[64.0,72.0,1.0],[66.0,20.0,1.0],[31.0,15.0,1.0],[45.0,30.0,0.0],[46.0,30.0,1.0],[27.0,36.0,0.0],[27.0,48.0,1.0],[51.0,40.0,0.0],[43.0,25.0,0.0],[65.0,20.0,1.0],[62.0,30.0,0.0],[29.0,30.0,0.0],[53.0,30.0,1.0],[26.0,40.0,0.0],[22.0,20.0,1.0],[29.0,36.0,0.0],[48.0,15.0,0.0],[40.0,54.0,0.0],[31.0,40.0,0.0],[43.0,25.0,0.0],[46.0,20.0,0.0],[25.0,24.0,0.0],[53.0,44.0,0.0],[52.0,24.0,1.0],[48.0,40.0,0.0],[60.0,35.0,0.0],[30.0,30.0,1.0],[42.0,51.0,1.0],[55.0,0.0,0.0],[35.0,50.0,0.0],[42.0,9.0,1.0],[20.0,32.0,1.0],[19.0,40.0,1.0],[66.0,72.0,1.0],[43.0,44.0,0.0],[38.0,40.0,0.0],[37.0,20.0,0.0],[47.0,48.0,1.0],[48.0,40.0,0.0],[46.0,48.0,0.0],[35.0,6.0,0.0],[24.0,72.0,1.0],[48.0,20.0,1.0],[55.0,45.0,0.0],[53.0,30.0,1.0],[19.0,0.0,1.0],[41.0,0.0,0.0],[55.0,16.0,1.0],[24.0,12.0,0.0],[42.0,2.0,1.0],[34.0,30.0,1.0],[35.0,32.0,0.0],[47.0,25.0,0.0],[40.0,28.0,0.0],[35.0,20.0,0.0],[27.0,48.0,0.0],[35.0,48.0,0.0],[45.0,30.0,0.0],[47.0,72.0,0.0],[56.0,6.0,0.0],[54.0,30.0,0.0],[51.0,45.0,0.0],[59.0,40.0,0.0],[24.0,40.0,0.0],[48.0,40.0,0.0],[36.0,25.0,0.0],[28.0,40.0,0.0],[30.0,35.0,0.0],[60.0,40.0,1.0],[49.0,0.0,1.0],[24.0,30.0,1.0],[45.0,50.0,0.0],[20.0,60.0,0.0],[28.0,28.0,0.0],[19.0,24.0,1.0],[22.0,12.0,1.0],[50.0,40.0,0.0],[32.0,60.0,0.0],[50.0,20.0,0.0],[33.0,30.0,0.0],[19.0,35.0,1.0],[55.0,22.0,0.0],[59.0,30.0,0.0],[50.0,40.0,0.0],[58.0,40.0,0.0],[41.0,24.0,0.0],[20.0,40.0,1.0],[59.0,30.0,0.0],[51.0,35.0,0.0],[35.0,44.0,0.0],[46.0,40.0,0.0],[62.0,48.0,0.0],[33.0,0.0,0.0],[24.0,33.0,1.0],[26.0,12.0,1.0],[64.0,40.0,0.0],[48.0,25.0,0.0],[48.0,48.0,0.0],[25.0,30.0,0.0],[54.0,44.0,1.0],[21.0,24.0,1.0],[32.0,57.0,0.0],[48.0,12.0,1.0],[44.0,66.0,1.0],[57.0,40.0,0.0],[57.0,45.0,0.0],[40.0,48.0,0.0],[35.0,40.0,1.0],[38.0,30.0,0.0],[28.0,0.0,0.0],[23.0,48.0,0.0],[27.0,49.0,1.0],[50.0,12.0,1.0],[25.0,13.0,1.0],[22.0,40.0,0.0],[38.0,35.0,0.0],[46.0,36.0,0.0],[22.0,48.0,0.0],[44.0,45.0,0.0],[49.0,12.0,1.0],[42.0,35.0,0.0],[45.0,30.0,0.0],[34.0,48.0,0.0],[49.0,0.0,0.0],[36.0,25.0,1.0],[24.0,46.0,1.0],[31.0,48.0,0.0],[21.0,40.0,1.0],[43.0,55.0,1.0],[41.0,30.0,0.0],[23.0,30.0,1.0],[53.0,0.0,0.0],[54.0,40.0,0.0],[50.0,48.0,0.0],[64.0,30.0,0.0],[59.0,72.0,0.0],[30.0,45.0,1.0],[34.0,40.0,1.0],[35.0,30.0,0.0],[33.0,40.0,1.0],[51.0,15.0,0.0],[47.0,48.0,0.0],[56.0,40.0,0.0],[55.0,20.0,0.0],[39.0,40.0,1.0],[60.0,20.0,0.0],[60.0,55.0,0.0],[40.0,30.0,0.0],[26.0,8.0,1.0],[35.0,25.0,0.0],[46.0,40.0,0.0],[30.0,30.0,0.0],[44.0,20.0,0.0],[49.0,40.0,1.0],[43.0,75.0,1.0],[33.0,32.0,1.0],[48.0,25.0,0.0],[45.0,56.0,0.0],[35.0,30.0,0.0],[45.0,0.0,0.0],[30.0,54.0,0.0],[42.0,24.0,1.0],[24.0,0.0,0.0],[53.0,84.0,0.0],[31.0,30.0,1.0],[34.0,20.0,0.0],[23.0,35.0,1.0],[61.0,0.0,0.0],[41.0,48.0,1.0],[50.0,50.0,0.0],[22.0,9.0,1.0],[74.0,35.0,0.0],[29.0,40.0,0.0],[25.0,48.0,1.0],[24.0,40.0,0.0],[34.0,35.0,0.0],[20.0,48.0,1.0],[24.0,54.0,1.0],[55.0,35.0,0.0],[38.0,45.0,0.0],[63.0,40.0,0.0],[48.0,15.0,1.0],[52.0,32.0,1.0],[30.0,20.0,1.0],[64.0,40.0,1.0],[54.0,40.0,0.0],[33.0,45.0,1.0],[54.0,24.0,0.0],[26.0,42.0,0.0],[66.0,20.0,1.0],[24.0,12.0,1.0],[41.0,24.0,1.0],[42.0,25.0,0.0],[26.0,54.0,1.0],[48.0,48.0,0.0],[26.0,30.0,0.0],[28.0,40.0,0.0],[36.0,20.0,0.0],[38.0,63.0,1.0],[30.0,48.0,0.0],[36.0,40.0,1.0],[32.0,49.0,0.0],[23.0,56.0,1.0],[44.0,30.0,1.0],[40.0,30.0,0.0],[41.0,48.0,0.0],[29.0,35.0,0.0],[55.0,20.0,0.0],[51.0,40.0,0.0],[51.0,40.0,0.0],[29.0,24.0,0.0],[39.0,40.0,1.0],[35.0,25.0,1.0],[57.0,20.0,1.0],[29.0,24.0,0.0],[49.0,40.0,0.0],[46.0,40.0,0.0],[48.0,60.0,1.0],[55.0,12.0,1.0],[24.0,8.0,1.0],[54.0,35.0,0.0],[47.0,18.0,0.0],[38.0,30.0,1.0],[25.0,40.0,1.0],[63.0,25.0,0.0],[47.0,30.0,0.0],[21.0,40.0,1.0],[39.0,56.0,1.0],[35.0,20.0,0.0],[48.0,40.0,1.0],[48.0,30.0,1.0],[52.0,45.0,0.0],[38.0,40.0,0.0],[39.0,23.0,0.0],[42.0,44.0,1.0],[43.0,30.0,1.0],[39.0,16.0,0.0],[28.0,48.0,1.0],[32.0,12.0,0.0],[57.0,30.0,0.0],[33.0,35.0,0.0],[51.0,20.0,0.0],[48.0,8.0,1.0],[70.0,6.0,1.0],[51.0,54.0,0.0],[58.0,32.0,0.0],[21.0,40.0,1.0],[55.0,35.0,0.0],[40.0,29.0,0.0],[35.0,48.0,0.0],[44.0,40.0,0.0],[53.0,40.0,0.0],[28.0,28.0,1.0],[37.0,40.0,1.0],[44.0,10.0,1.0],[48.0,48.0,0.0],[26.0,72.0,0.0],[55.0,40.0,0.0],[36.0,24.0,0.0],[50.0,30.0,0.0],[45.0,36.0,1.0],[46.0,30.0,0.0],[31.0,40.0,1.0],[24.0,40.0,0.0],[22.0,30.0,1.0],[34.0,20.0,1.0],[35.0,60.0,0.0],[39.0,60.0,0.0],[59.0,24.0,1.0],[42.0,16.0,0.0],[40.0,0.0,1.0],[26.0,40.0,0.0],[68.0,30.0,1.0],[25.0,56.0,0.0],[42.0,24.0,1.0],[36.0,31.0,0.0],[41.0,30.0,0.0],[20.0,9.0,1.0],[46.0,40.0,1.0],[40.0,60.0,1.0],[52.0,40.0,0.0],[50.0,30.0,0.0],[27.0,15.0,0.0],[23.0,12.0,1.0],[29.0,45.0,0.0],[38.0,48.0,0.0],[35.0,40.0,1.0],[29.0,20.0,0.0],[42.0,40.0,0.0],[34.0,0.0,0.0],[36.0,40.0,0.0],[69.0,30.0,0.0],[39.0,40.0,0.0],[54.0,48.0,1.0],[35.0,40.0,0.0],[54.0,48.0,1.0],[43.0,60.0,0.0],[49.0,24.0,1.0],[57.0,18.0,0.0],[25.0,24.0,1.0],[52.0,0.0,0.0],[25.0,30.0,0.0],[22.0,40.0,1.0],[57.0,42.0,0.0],[25.0,40.0,1.0],[35.0,40.0,0.0],[38.0,20.0,0.0],[32.0,52.0,1.0],[56.0,60.0,0.0],[52.0,50.0,0.0],[46.0,84.0,1.0],[41.0,16.0,1.0],[35.0,35.0,0.0],[19.0,14.0,1.0],[51.0,35.0,0.0],[27.0,48.0,0.0],[55.0,44.0,0.0],[24.0,60.0,0.0],[60.0,25.0,0.0],[43.0,56.0,1.0],[54.0,9.0,1.0],[45.0,48.0,0.0],[27.0,45.0,0.0],[49.0,48.0,0.0],[20.0,24.0,1.0],[21.0,6.0,1.0],[24.0,35.0,0.0],[37.0,16.0,1.0],[66.0,20.0,0.0],[42.0,70.0,0.0],[61.0,40.0,0.0],[51.0,30.0,0.0],[37.0,25.0,0.0],[54.0,24.0,0.0],[20.0,36.0,1.0],[40.0,30.0,0.0],[46.0,40.0,0.0],[95.0,40.0,0.0],[47.0,36.0,0.0],[35.0,40.0,1.0],[74.0,6.0,1.0],[37.0,72.0,0.0],[39.0,40.0,0.0],[40.0,18.0,0.0],[22.0,24.0,1.0],[40.0,44.0,1.0],[36.0,32.0,0.0],[35.0,20.0,1.0],[56.0,25.0,0.0],[24.0,30.0,1.0],[37.0,50.0,0.0],[37.0,42.0,0.0],[47.0,60.0,1.0],[39.0,48.0,0.0],[37.0,40.0,0.0],[27.0,45.0,0.0],[21.0,42.0,1.0],[68.0,6.0,1.0],[36.0,25.0,0.0],[35.0,55.0,1.0],[59.0,35.0,0.0],[30.0,24.0,1.0],[34.0,20.0,1.0],[25.0,45.0,0.0],[50.0,40.0,0.0],[42.0,36.0,1.0],[49.0,32.0,1.0],[26.0,48.0,0.0],[37.0,60.0,1.0],[62.0,50.0,1.0],[57.0,40.0,0.0],[36.0,35.0,0.0],[59.0,40.0,0.0],[42.0,35.0,1.0],[36.0,40.0,0.0],[41.0,30.0,0.0],[48.0,30.0,0.0],[21.0,56.0,0.0],[26.0,20.0,0.0],[43.0,0.0,0.0],[25.0,40.0,0.0],[21.0,24.0,1.0],[41.0,48.0,0.0],[54.0,40.0,0.0],[41.0,48.0,0.0],[36.0,23.0,1.0],[30.0,48.0,0.0],[21.0,36.0,1.0],[32.0,48.0,0.0],[26.0,12.0,1.0],[34.0,45.0,0.0],[26.0,30.0,0.0],[35.0,42.0,1.0],[26.0,40.0,1.0],[55.0,0.0,0.0],[57.0,32.0,1.0],[40.0,54.0,0.0],[37.0,24.0,0.0],[31.0,30.0,1.0],[34.0,0.0,0.0],[47.0,35.0,0.0],[56.0,12.0,1.0],[29.0,56.0,0.0],[35.0,40.0,1.0],[39.0,48.0,1.0],[56.0,42.0,1.0],[24.0,48.0,0.0],[44.0,20.0,0.0],[35.0,40.0,1.0],[25.0,25.0,0.0],[48.0,40.0,1.0],[49.0,40.0,0.0],[57.0,30.0,0.0],[40.0,48.0,0.0],[38.0,48.0,0.0],[46.0,30.0,0.0],[51.0,44.0,0.0],[50.0,36.0,0.0],[42.0,20.0,0.0],[54.0,15.0,1.0],[53.0,42.0,1.0],[24.0,42.0,0.0],[67.0,24.0,1.0],[39.0,40.0,0.0],[28.0,40.0,0.0],[32.0,70.0,1.0],[26.0,36.0,1.0],[59.0,45.0,0.0],[56.0,54.0,0.0],[37.0,45.0,0.0],[19.0,20.0,1.0],[37.0,48.0,0.0],[46.0,56.0,0.0],[46.0,0.0,0.0],[38.0,10.0,1.0],[62.0,30.0,0.0],[25.0,15.0,1.0],[53.0,12.0,1.0],[29.0,36.0,0.0],[48.0,20.0,0.0],[44.0,16.0,1.0],[18.0,42.0,1.0],[39.0,36.0,0.0],[53.0,24.0,0.0],[62.0,0.0,0.0],[45.0,40.0,0.0],[29.0,40.0,0.0],[51.0,24.0,0.0],[42.0,40.0,1.0],[26.0,40.0,1.0],[52.0,35.0,0.0],[29.0,20.0,1.0],[53.0,6.0,1.0],[34.0,54.0,0.0],[31.0,21.0,1.0],[17.0,44.0,1.0],[32.0,0.0,0.0],[28.0,36.0,0.0],[26.0,30.0,1.0],[52.0,25.0,0.0],[55.0,28.0,0.0],[63.0,40.0,0.0],[47.0,30.0,0.0],[41.0,48.0,1.0],[47.0,24.0,0.0],[30.0,24.0,1.0],[28.0,30.0,0.0],[40.0,0.0,0.0],[31.0,30.0,0.0],[36.0,42.0,0.0],[45.0,30.0,1.0],[39.0,48.0,1.0],[66.0,56.0,1.0],[37.0,54.0,1.0],[46.0,30.0,0.0],[23.0,70.0,1.0],[31.0,40.0,0.0],[58.0,40.0,0.0],[38.0,48.0,1.0],[65.0,18.0,1.0],[49.0,40.0,0.0],[27.0,6.0,1.0],[42.0,44.0,0.0],[39.0,30.0,1.0],[15.0,12.0,1.0],[39.0,40.0,0.0],[44.0,45.0,0.0],[25.0,42.0,1.0],[29.0,25.0,1.0],[21.0,6.0,1.0],[52.0,30.0,0.0],[40.0,45.0,0.0],[42.0,40.0,0.0],[22.0,30.0,1.0],[26.0,24.0,1.0],[46.0,0.0,0.0],[46.0,42.0,0.0],[47.0,44.0,1.0],[56.0,30.0,0.0],[48.0,40.0,0.0],[26.0,12.0,1.0],[59.0,60.0,0.0],[49.0,48.0,1.0],[51.0,40.0,0.0],[46.0,12.0,1.0],[38.0,30.0,1.0],[58.0,50.0,0.0],[18.0,18.0,1.0],[48.0,20.0,0.0],[36.0,48.0,0.0],[41.0,40.0,0.0],[47.0,60.0,0.0],[53.0,21.0,0.0],[38.0,35.0,0.0],[40.0,60.0,1.0],[26.0,40.0,0.0],[34.0,48.0,0.0],[38.0,40.0,0.0],[20.0,48.0,1.0],[32.0,66.0,1.0],[27.0,15.0,0.0],[23.0,36.0,1.0],[45.0,42.0,0.0],[34.0,45.0,0.0],[31.0,35.0,0.0],[31.0,35.0,0.0],[54.0,48.0,0.0],[35.0,21.0,0.0],[24.0,56.0,0.0],[24.0,20.0,1.0],[36.0,40.0,0.0],[58.0,46.0,0.0],[39.0,40.0,0.0],[45.0,30.0,1.0],[38.0,40.0,0.0],[42.0,30.0,0.0],[57.0,48.0,0.0],[36.0,60.0,1.0],[21.0,35.0,0.0],[44.0,40.0,0.0],[19.0,40.0,1.0],[48.0,26.0,1.0],[48.0,20.0,0.0],[34.0,30.0,0.0],[51.0,30.0,0.0],[46.0,0.0,0.0],[41.0,14.0,1.0],[48.0,30.0,0.0],[19.0,40.0,1.0],[52.0,12.0,1.0],[32.0,48.0,1.0],[46.0,30.0,0.0],[29.0,25.0,1.0],[40.0,48.0,0.0],[50.0,4.0,1.0],[40.0,20.0,0.0],[28.0,40.0,0.0],[46.0,50.0,0.0],[42.0,25.0,0.0],[73.0,8.0,1.0],[38.0,30.0,0.0],[28.0,20.0,1.0],[39.0,56.0,0.0],[45.0,0.0,0.0],[27.0,15.0,1.0],[41.0,40.0,0.0],[52.0,40.0,0.0],[32.0,40.0,0.0],[40.0,44.0,1.0],[53.0,40.0,1.0],[38.0,48.0,0.0],[64.0,30.0,0.0],[32.0,12.0,1.0],[38.0,46.0,0.0],[38.0,40.0,1.0],[69.0,0.0,0.0],[44.0,56.0,1.0],[34.0,40.0,0.0],[33.0,20.0,0.0],[30.0,40.0,0.0],[38.0,20.0,0.0],[29.0,56.0,0.0],[44.0,40.0,0.0],[45.0,40.0,0.0],[40.0,50.0,1.0],[20.0,40.0,1.0],[51.0,50.0,0.0],[31.0,35.0,0.0],[62.0,32.0,0.0],[36.0,48.0,0.0],[19.0,48.0,1.0],[38.0,40.0,0.0],[44.0,40.0,0.0],[19.0,54.0,1.0],[24.0,72.0,1.0],[23.0,44.0,0.0],[23.0,48.0,1.0],[60.0,32.0,0.0],[60.0,32.0,0.0],[36.0,40.0,0.0],[51.0,25.0,0.0],[53.0,48.0,0.0],[50.0,40.0,0.0],[38.0,40.0,0.0],[51.0,25.0,0.0],[27.0,40.0,1.0],[43.0,40.0,0.0],[28.0,20.0,0.0],[32.0,40.0,0.0],[40.0,48.0,1.0],[52.0,35.0,0.0],[42.0,48.0,0.0],[24.0,28.0,1.0],[58.0,5.0,1.0],[38.0,24.0,1.0],[46.0,30.0,1.0],[39.0,18.0,0.0],[39.0,0.0,1.0],[25.0,40.0,0.0],[64.0,40.0,0.0],[64.0,40.0,0.0],[55.0,60.0,1.0],[24.0,32.0,1.0],[40.0,12.0,1.0],[40.0,24.0,1.0],[58.0,30.0,0.0],[38.0,52.0,1.0],[51.0,40.0,0.0],[55.0,20.0,0.0],[53.0,72.0,1.0],[36.0,12.0,1.0],[61.0,0.0,0.0],[46.0,48.0,1.0],[40.0,40.0,0.0],[31.0,35.0,0.0],[51.0,48.0,0.0],[55.0,50.0,1.0],[55.0,20.0,0.0],[39.0,30.0,0.0],[51.0,48.0,0.0],[33.0,42.0,0.0],[62.0,40.0,1.0],[23.0,45.0,1.0],[57.0,40.0,0.0],[38.0,24.0,1.0],[22.0,48.0,0.0],[27.0,45.0,0.0],[41.0,35.0,0.0],[51.0,12.0,1.0],[48.0,45.0,0.0],[52.0,28.0,1.0],[29.0,45.0,1.0],[50.0,25.0,1.0],[20.0,44.0,1.0],[45.0,60.0,0.0],[19.0,20.0,0.0],[63.0,50.0,1.0],[48.0,32.0,0.0],[28.0,20.0,1.0],[35.0,12.0,1.0],[34.0,45.0,0.0],[28.0,48.0,0.0],[41.0,36.0,0.0],[37.0,48.0,0.0],[34.0,40.0,0.0],[20.0,72.0,0.0],[43.0,16.0,1.0],[48.0,50.0,0.0],[36.0,36.0,1.0],[29.0,48.0,1.0],[60.0,40.0,0.0],[62.0,60.0,0.0],[27.0,28.0,1.0],[56.0,44.0,0.0],[44.0,30.0,0.0],[43.0,48.0,0.0],[21.0,12.0,1.0],[50.0,40.0,0.0],[34.0,64.0,1.0],[48.0,20.0,0.0],[37.0,30.0,0.0],[46.0,15.0,0.0],[33.0,30.0,1.0],[51.0,12.0,1.0],[48.0,25.0,0.0],[47.0,20.0,0.0],[36.0,0.0,0.0],[41.0,0.0,0.0],[27.0,40.0,0.0],[31.0,35.0,0.0],[47.0,48.0,1.0],[32.0,40.0,0.0],[31.0,45.0,0.0],[38.0,40.0,0.0],[31.0,40.0,0.0],[39.0,50.0,0.0],[40.0,20.0,0.0],[47.0,30.0,0.0],[34.0,50.0,1.0],[26.0,2.0,1.0],[32.0,25.0,1.0],[33.0,40.0,0.0],[33.0,40.0,0.0],[38.0,40.0,0.0],[42.0,68.0,0.0],[29.0,32.0,1.0],[60.0,0.0,0.0],[52.0,40.0,0.0],[43.0,30.0,0.0],[48.0,40.0,0.0],[32.0,36.0,0.0],[32.0,40.0,0.0],[50.0,48.0,0.0],[19.0,30.0,0.0],[32.0,40.0,0.0],[56.0,40.0,0.0],[38.0,40.0,1.0],[37.0,15.0,0.0],[52.0,6.0,1.0],[38.0,0.0,0.0],[58.0,20.0,1.0],[34.0,30.0,0.0],[28.0,48.0,0.0],[31.0,23.0,1.0],[24.0,25.0,1.0],[62.0,40.0,0.0],[62.0,30.0,0.0],[50.0,40.0,0.0],[28.0,45.0,1.0],[43.0,40.0,0.0],[59.0,40.0,0.0],[35.0,40.0,1.0],[36.0,84.0,0.0],[63.0,60.0,0.0],[50.0,20.0,0.0],[28.0,36.0,0.0],[19.0,42.0,1.0],[22.0,24.0,1.0],[64.0,50.0,0.0],[38.0,48.0,0.0],[30.0,36.0,0.0],[46.0,60.0,0.0],[45.0,40.0,0.0],[48.0,40.0,0.0],[16.0,12.0,1.0],[65.0,0.0,1.0],[38.0,32.0,1.0],[30.0,15.0,1.0],[34.0,35.0,0.0],[46.0,45.0,0.0],[47.0,36.0,1.0],[44.0,45.0,0.0],[29.0,55.0,0.0],[25.0,36.0,0.0],[52.0,25.0,0.0],[31.0,40.0,0.0],[22.0,10.0,1.0],[64.0,20.0,1.0],[64.0,48.0,0.0],[33.0,24.0,0.0],[47.0,36.0,1.0],[35.0,60.0,1.0],[22.0,21.0,1.0],[38.0,30.0,1.0],[45.0,56.0,1.0],[57.0,40.0,0.0],[57.0,40.0,0.0],[19.0,24.0,1.0],[52.0,26.0,0.0],[35.0,24.0,0.0],[38.0,78.0,1.0],[32.0,8.0,0.0],[62.0,25.0,0.0],[68.0,40.0,0.0],[50.0,40.0,0.0],[43.0,60.0,0.0],[38.0,18.0,1.0],[52.0,72.0,0.0],[23.0,40.0,1.0],[59.0,30.0,0.0],[39.0,40.0,1.0],[20.0,48.0,1.0],[43.0,60.0,0.0],[48.0,48.0,0.0],[21.0,24.0,0.0],[40.0,48.0,0.0],[47.0,46.0,0.0],[32.0,38.0,1.0],[28.0,72.0,0.0],[34.0,30.0,0.0],[39.0,25.0,0.0],[35.0,56.0,1.0],[45.0,56.0,0.0],[29.0,42.0,1.0],[58.0,45.0,1.0],[37.0,40.0,0.0],[60.0,54.0,0.0],[61.0,48.0,1.0],[42.0,24.0,1.0],[62.0,54.0,0.0],[31.0,12.0,1.0],[23.0,4.0,1.0],[38.0,40.0,0.0],[57.0,0.0,0.0],[44.0,20.0,0.0],[49.0,28.0,0.0],[60.0,30.0,1.0],[63.0,0.0,0.0],[41.0,48.0,0.0],[25.0,40.0,0.0],[26.0,36.0,0.0],[43.0,35.0,0.0],[49.0,60.0,0.0],[23.0,20.0,0.0],[45.0,39.0,0.0],[49.0,30.0,0.0],[45.0,25.0,0.0],[33.0,40.0,0.0],[50.0,12.0,1.0],[46.0,40.0,0.0],[24.0,20.0,1.0],[31.0,40.0,0.0],[26.0,44.0,1.0],[67.0,20.0,0.0],[42.0,60.0,0.0],[25.0,60.0,0.0],[35.0,0.0,0.0],[66.0,72.0,1.0],[17.0,54.0,0.0],[30.0,36.0,0.0],[20.0,48.0,1.0],[43.0,25.0,0.0],[56.0,25.0,0.0],[19.0,8.0,1.0],[24.0,40.0,1.0],[28.0,24.0,1.0],[48.0,40.0,0.0],[37.0,40.0,1.0],[43.0,20.0,0.0],[25.0,0.0,0.0],[34.0,36.0,1.0],[24.0,30.0,1.0],[45.0,10.0,0.0],[40.0,40.0,0.0],[64.0,0.0,0.0],[31.0,48.0,1.0],[36.0,44.0,0.0],[61.0,30.0,0.0],[24.0,40.0,1.0],[52.0,55.0,0.0],[46.0,25.0,0.0],[30.0,30.0,1.0],[41.0,18.0,1.0],[28.0,25.0,0.0],[53.0,37.0,1.0],[61.0,30.0,0.0],[62.0,35.0,1.0],[46.0,45.0,0.0],[28.0,6.0,1.0],[57.0,44.0,0.0],[55.0,20.0,0.0],[64.0,20.0,0.0],[52.0,48.0,0.0],[53.0,0.0,0.0],[47.0,32.0,0.0],[25.0,48.0,0.0],[24.0,40.0,1.0],[63.0,72.0,1.0],[36.0,30.0,0.0],[53.0,9.0,1.0],[26.0,20.0,1.0],[36.0,10.0,1.0],[20.0,54.0,0.0],[40.0,40.0,0.0],[33.0,56.0,0.0],[30.0,40.0,0.0],[57.0,12.0,1.0],[61.0,48.0,0.0],[55.0,0.0,0.0],[54.0,18.0,0.0],[33.0,48.0,1.0],[32.0,60.0,0.0],[36.0,20.0,1.0],[51.0,45.0,0.0],[45.0,40.0,0.0],[35.0,4.0,1.0],[42.0,30.0,0.0],[59.0,44.0,0.0],[65.0,30.0,0.0],[60.0,0.0,0.0],[47.0,21.0,0.0],[27.0,36.0,1.0],[47.0,50.0,0.0],[24.0,20.0,1.0],[43.0,20.0,0.0],[45.0,40.0,0.0],[40.0,84.0,0.0],[62.0,30.0,0.0],[35.0,48.0,0.0],[22.0,48.0,1.0],[25.0,15.0,1.0],[29.0,40.0,1.0],[43.0,45.0,0.0],[52.0,30.0,0.0],[60.0,30.0,0.0],[51.0,36.0,0.0],[38.0,40.0,0.0],[20.0,20.0,1.0],[34.0,12.0,1.0],[21.0,30.0,1.0],[55.0,44.0,0.0],[55.0,35.0,0.0],[22.0,12.0,1.0],[52.0,45.0,0.0],[24.0,40.0,0.0],[63.0,40.0,0.0],[45.0,30.0,1.0],[27.0,40.0,0.0],[42.0,2.0,1.0],[29.0,0.0,0.0],[34.0,32.0,0.0],[38.0,48.0,0.0],[29.0,24.0,1.0],[55.0,40.0,0.0],[30.0,40.0,1.0],[61.0,16.0,1.0],[59.0,0.0,0.0],[58.0,21.0,1.0],[46.0,18.0,0.0],[23.0,15.0,1.0],[44.0,30.0,0.0],[54.0,44.0,0.0],[50.0,8.0,0.0],[20.0,15.0,1.0],[41.0,45.0,0.0],[26.0,36.0,1.0],[26.0,45.0,0.0],[52.0,48.0,0.0],[67.0,45.0,0.0],[23.0,45.0,0.0],[25.0,30.0,0.0],[43.0,42.0,1.0],[48.0,45.0,0.0],[33.0,35.0,0.0],[54.0,12.0,1.0],[55.0,45.0,1.0],[56.0,35.0,0.0],[54.0,30.0,0.0],[44.0,45.0,0.0],[60.0,45.0,0.0],[21.0,30.0,0.0],[42.0,30.0,0.0],[37.0,40.0,0.0],[49.0,40.0,0.0],[24.0,24.0,1.0],[41.0,40.0,0.0],[34.0,72.0,0.0],[46.0,32.0,0.0],[46.0,49.0,0.0],[31.0,25.0,0.0],[19.0,40.0,0.0],[22.0,40.0,1.0],[60.0,35.0,0.0],[30.0,40.0,1.0],[51.0,35.0,0.0],[36.0,48.0,1.0],[49.0,40.0,0.0],[64.0,24.0,1.0],[53.0,30.0,0.0],[51.0,0.0,0.0],[37.0,35.0,0.0],[58.0,21.0,0.0],[29.0,36.0,0.0],[46.0,0.0,0.0],[63.0,0.0,1.0],[31.0,0.0,0.0],[28.0,14.0,1.0],[28.0,24.0,0.0],[49.0,30.0,0.0],[38.0,9.0,1.0],[37.0,47.0,1.0],[45.0,40.0,1.0],[19.0,20.0,0.0],[38.0,45.0,0.0],[52.0,50.0,0.0],[41.0,48.0,0.0],[53.0,20.0,1.0],[26.0,40.0,1.0],[35.0,25.0,0.0],[22.0,56.0,1.0],[55.0,40.0,0.0],[46.0,20.0,0.0],[58.0,35.0,1.0],[22.0,48.0,1.0],[75.0,5.0,1.0],[22.0,12.0,1.0],[38.0,45.0,0.0],[41.0,32.0,0.0],[20.0,9.0,1.0],[34.0,45.0,1.0],[39.0,25.0,0.0],[26.0,48.0,0.0],[33.0,50.0,1.0],[39.0,20.0,1.0],[43.0,45.0,1.0],[29.0,60.0,0.0],[24.0,15.0,1.0],[56.0,30.0,0.0],[45.0,40.0,1.0],[70.0,72.0,0.0],[36.0,48.0,0.0],[43.0,70.0,0.0],[46.0,45.0,0.0],[33.0,30.0,0.0],[25.0,6.0,0.0],[61.0,20.0,0.0],[30.0,4.0,1.0],[25.0,48.0,0.0],[39.0,20.0,0.0],[42.0,30.0,1.0],[38.0,50.0,1.0],[33.0,48.0,1.0],[47.0,40.0,0.0],[57.0,35.0,1.0],[30.0,20.0,0.0],[36.0,40.0,1.0],[36.0,42.0,1.0],[32.0,36.0,0.0],[30.0,60.0,1.0],[25.0,45.0,0.0],[58.0,20.0,1.0],[65.0,40.0,0.0],[32.0,9.0,1.0],[63.0,30.0,0.0],[23.0,8.0,1.0],[35.0,40.0,0.0],[54.0,44.0,0.0],[35.0,45.0,0.0],[44.0,12.0,1.0],[72.0,40.0,0.0],[36.0,48.0,1.0],[32.0,44.0,0.0],[48.0,45.0,0.0],[28.0,12.0,1.0],[43.0,40.0,0.0],[55.0,25.0,0.0],[15.0,40.0,0.0],[39.0,72.0,0.0],[29.0,45.0,0.0],[41.0,40.0,0.0],[43.0,40.0,0.0],[53.0,40.0,0.0],[37.0,36.0,1.0],[62.0,40.0,0.0],[30.0,24.0,1.0],[43.0,40.0,0.0],[65.0,30.0,0.0],[21.0,45.0,1.0],[49.0,25.0,0.0],[27.0,60.0,0.0],[33.0,54.0,1.0],[67.0,35.0,1.0],[30.0,25.0,0.0],[26.0,10.0,1.0],[29.0,44.0,1.0],[53.0,48.0,0.0],[28.0,40.0,1.0],[40.0,45.0,0.0],[34.0,42.0,1.0],[38.0,40.0,1.0],[47.0,48.0,0.0],[57.0,40.0,1.0],[23.0,20.0,1.0],[33.0,32.0,1.0],[25.0,40.0,1.0],[43.0,45.0,0.0],[44.0,36.0,1.0],[23.0,0.0,1.0],[27.0,54.0,0.0],[33.0,20.0,0.0],[39.0,60.0,0.0],[38.0,40.0,1.0],[21.0,30.0,1.0],[46.0,30.0,0.0],[30.0,54.0,0.0],[30.0,36.0,1.0],[30.0,30.0,0.0],[51.0,36.0,0.0],[50.0,35.0,0.0],[55.0,40.0,0.0],[30.0,40.0,0.0],[45.0,35.0,0.0],[32.0,18.0,1.0],[45.0,20.0,0.0],[35.0,25.0,0.0],[49.0,50.0,1.0],[27.0,25.0,1.0],[49.0,8.0,1.0],[34.0,40.0,0.0],[53.0,30.0,0.0],[23.0,48.0,0.0],[56.0,36.0,1.0],[27.0,54.0,0.0],[24.0,25.0,1.0],[21.0,54.0,1.0],[37.0,54.0,0.0],[36.0,20.0,0.0],[31.0,48.0,0.0],[35.0,28.0,1.0],[43.0,66.0,1.0],[56.0,48.0,1.0],[39.0,60.0,0.0],[30.0,12.0,1.0],[67.0,30.0,0.0],[35.0,40.0,0.0],[31.0,28.0,1.0],[49.0,48.0,1.0],[67.0,36.0,1.0],[53.0,42.0,0.0],[57.0,30.0,1.0],[66.0,44.0,0.0],[43.0,40.0,0.0],[35.0,25.0,1.0],[40.0,0.0,0.0],[27.0,48.0,0.0],[51.0,44.0,0.0],[41.0,60.0,0.0],[53.0,8.0,0.0],[60.0,30.0,0.0],[32.0,60.0,0.0],[41.0,40.0,0.0],[42.0,44.0,0.0],[40.0,36.0,0.0],[26.0,34.0,0.0],[28.0,20.0,1.0],[31.0,48.0,0.0],[29.0,9.0,1.0],[33.0,48.0,0.0],[36.0,54.0,0.0],[75.0,12.0,1.0],[32.0,48.0,1.0],[63.0,40.0,0.0],[40.0,30.0,0.0],[28.0,25.0,1.0],[44.0,48.0,0.0],[34.0,48.0,0.0],[25.0,25.0,1.0],[26.0,34.0,1.0],[21.0,63.0,1.0],[49.0,24.0,1.0],[30.0,48.0,0.0],[33.0,30.0,0.0],[44.0,30.0,0.0],[51.0,35.0,0.0],[31.0,50.0,0.0],[28.0,33.0,1.0],[31.0,24.0,0.0],[37.0,35.0,0.0],[32.0,36.0,1.0],[51.0,44.0,0.0],[40.0,0.0,0.0],[34.0,40.0,1.0],[35.0,25.0,1.0],[54.0,12.0,0.0],[24.0,40.0,1.0],[30.0,48.0,0.0],[35.0,40.0,0.0],[20.0,24.0,1.0],[39.0,42.0,0.0],[57.0,24.0,0.0],[55.0,45.0,0.0],[30.0,30.0,1.0],[35.0,36.0,0.0],[37.0,60.0,0.0],[35.0,40.0,0.0],[23.0,48.0,1.0],[54.0,4.0,1.0],[18.0,24.0,1.0],[47.0,0.0,0.0],[50.0,40.0,0.0],[65.0,12.0,1.0],[39.0,40.0,0.0],[32.0,25.0,1.0],[40.0,30.0,1.0],[36.0,12.0,1.0],[57.0,45.0,0.0],[44.0,30.0,0.0],[45.0,20.0,0.0],[38.0,56.0,1.0],[27.0,18.0,1.0],[37.0,40.0,0.0],[60.0,25.0,0.0],[36.0,48.0,0.0],[51.0,12.0,1.0],[27.0,30.0,0.0],[51.0,18.0,1.0],[53.0,44.0,0.0],[46.0,72.0,1.0],[58.0,45.0,0.0],[24.0,42.0,1.0],[40.0,48.0,0.0],[41.0,40.0,0.0],[33.0,40.0,1.0],[39.0,48.0,0.0],[30.0,20.0,1.0],[31.0,24.0,0.0],[35.0,40.0,0.0],[21.0,0.0,0.0],[27.0,48.0,0.0],[38.0,49.0,1.0],[48.0,30.0,0.0],[38.0,18.0,1.0],[30.0,72.0,0.0],[49.0,40.0,0.0],[50.0,48.0,0.0],[30.0,45.0,0.0],[53.0,84.0,0.0],[47.0,0.0,0.0],[47.0,43.0,0.0],[42.0,30.0,1.0],[62.0,0.0,0.0],[62.0,44.0,1.0],[41.0,40.0,0.0],[27.0,45.0,0.0],[42.0,10.0,0.0],[31.0,24.0,1.0],[58.0,20.0,0.0],[43.0,40.0,0.0],[34.0,40.0,0.0],[63.0,40.0,0.0],[45.0,40.0,0.0],[51.0,40.0,1.0],[39.0,30.0,0.0],[52.0,0.0,0.0],[39.0,35.0,0.0],[52.0,30.0,0.0],[39.0,48.0,0.0],[24.0,50.0,0.0],[49.0,32.0,0.0],[40.0,30.0,1.0],[43.0,25.0,0.0],[57.0,40.0,1.0],[63.0,30.0,1.0],[21.0,49.0,0.0],[39.0,24.0,0.0],[33.0,30.0,0.0],[52.0,10.0,0.0],[21.0,16.0,1.0],[53.0,12.0,0.0],[26.0,30.0,0.0],[31.0,54.0,1.0],[32.0,44.0,0.0],[43.0,12.0,1.0],[63.0,0.0,0.0],[45.0,42.0,1.0],[53.0,63.0,0.0],[44.0,0.0,0.0],[48.0,35.0,0.0],[28.0,40.0,1.0],[48.0,40.0,0.0],[23.0,12.0,1.0],[36.0,24.0,0.0],[53.0,40.0,0.0],[59.0,10.0,1.0],[31.0,40.0,1.0],[32.0,0.0,1.0],[50.0,50.0,0.0],[49.0,0.0,0.0],[58.0,48.0,0.0],[49.0,40.0,0.0],[37.0,77.0,0.0],[47.0,48.0,0.0],[39.0,14.0,0.0],[55.0,40.0,0.0],[26.0,10.0,1.0],[42.0,20.0,0.0],[79.0,6.0,1.0],[35.0,56.0,1.0],[37.0,36.0,0.0],[27.0,20.0,0.0],[48.0,30.0,0.0],[57.0,6.0,1.0],[76.0,5.0,1.0],[22.0,6.0,1.0],[56.0,48.0,0.0],[54.0,30.0,0.0],[52.0,20.0,0.0],[30.0,40.0,1.0],[34.0,44.0,0.0],[55.0,0.0,0.0],[24.0,40.0,1.0],[63.0,35.0,0.0],[45.0,48.0,0.0],[38.0,25.0,0.0],[46.0,48.0,0.0],[33.0,32.0,1.0],[49.0,40.0,1.0],[40.0,48.0,1.0],[51.0,44.0,0.0],[43.0,30.0,1.0],[27.0,48.0,0.0],[50.0,48.0,0.0],[18.0,60.0,1.0],[24.0,48.0,0.0],[39.0,4.0,1.0],[41.0,41.0,0.0],[51.0,30.0,0.0],[33.0,48.0,1.0],[48.0,55.0,0.0],[31.0,30.0,0.0],[36.0,0.0,0.0],[35.0,20.0,0.0],[30.0,40.0,1.0],[32.0,4.0,0.0],[36.0,40.0,0.0],[38.0,20.0,0.0],[23.0,40.0,0.0],[53.0,60.0,0.0],[33.0,44.0,0.0],[40.0,45.0,0.0],[36.0,30.0,0.0],[22.0,18.0,1.0],[37.0,50.0,0.0],[59.0,30.0,0.0],[24.0,40.0,0.0],[30.0,32.0,1.0],[30.0,36.0,1.0],[27.0,40.0,1.0],[24.0,36.0,0.0],[63.0,30.0,0.0],[63.0,40.0,0.0],[60.0,11.0,1.0],[33.0,20.0,0.0],[28.0,48.0,1.0],[55.0,32.0,0.0],[35.0,40.0,1.0],[46.0,0.0,0.0],[30.0,48.0,0.0],[47.0,45.0,0.0],[51.0,9.0,0.0],[43.0,60.0,0.0],[33.0,44.0,0.0],[28.0,40.0,1.0],[37.0,30.0,0.0],[22.0,0.0,0.0],[35.0,48.0,0.0],[54.0,10.0,1.0],[57.0,0.0,0.0],[44.0,40.0,0.0],[39.0,0.0,0.0],[41.0,30.0,0.0],[35.0,40.0,1.0],[49.0,40.0,0.0],[35.0,9.0,1.0],[41.0,40.0,0.0],[55.0,0.0,0.0],[49.0,30.0,0.0],[61.0,58.0,1.0],[39.0,24.0,1.0],[39.0,40.0,0.0],[33.0,15.0,1.0],[50.0,40.0,0.0],[39.0,55.0,1.0],[43.0,40.0,0.0],[50.0,40.0,0.0],[58.0,14.0,0.0],[40.0,40.0,0.0],[46.0,35.0,0.0],[24.0,20.0,1.0],[56.0,56.0,0.0],[27.0,30.0,1.0],[47.0,48.0,0.0],[48.0,32.0,0.0],[54.0,30.0,1.0],[42.0,30.0,0.0],[46.0,70.0,1.0],[29.0,48.0,0.0],[63.0,40.0,0.0],[46.0,48.0,0.0],[56.0,45.0,0.0],[40.0,40.0,1.0],[20.0,48.0,1.0],[44.0,42.0,0.0],[44.0,20.0,0.0],[36.0,24.0,0.0],[59.0,24.0,0.0],[44.0,25.0,0.0],[26.0,21.0,1.0],[57.0,48.0,1.0],[19.0,36.0,0.0],[42.0,0.0,0.0],[63.0,30.0,0.0],[46.0,50.0,0.0],[26.0,96.0,0.0],[60.0,35.0,0.0],[29.0,84.0,0.0],[50.0,48.0,0.0],[27.0,40.0,0.0],[25.0,43.0,0.0],[30.0,30.0,1.0],[43.0,48.0,0.0],[48.0,45.0,1.0],[31.0,9.0,1.0],[38.0,44.0,1.0],[57.0,40.0,1.0],[39.0,20.0,0.0],[30.0,30.0,0.0],[40.0,35.0,0.0],[60.0,0.0,0.0],[54.0,4.0,1.0],[26.0,25.0,1.0],[57.0,40.0,0.0],[47.0,25.0,0.0],[18.0,54.0,0.0],[45.0,20.0,0.0],[30.0,36.0,1.0],[48.0,30.0,0.0],[34.0,8.0,1.0],[34.0,48.0,0.0],[30.0,32.0,0.0],[47.0,72.0,0.0],[31.0,50.0,0.0],[63.0,35.0,0.0],[32.0,30.0,0.0],[37.0,30.0,0.0]],"personas_modelo":71222,"tasa_modelo":40.8,"n_train":56977,"n_test":14245,"acc_baseline":59.2,"acc_k5_crudo":78.3,"acc_k5_escalado":79.6,"cv":[{"k":1,"w":"uniform","acc":75.24,"sd":0.3},{"k":1,"w":"distance","acc":75.24,"sd":0.3},{"k":5,"w":"uniform","acc":79.69,"sd":0.28},{"k":5,"w":"distance","acc":78.26,"sd":0.22},{"k":15,"w":"uniform","acc":81.04,"sd":0.24},{"k":15,"w":"distance","acc":79.46,"sd":0.33},{"k":31,"w":"uniform","acc":81.17,"sd":0.37},{"k":31,"w":"distance","acc":79.89,"sd":0.36},{"k":51,"w":"uniform","acc":80.99,"sd":0.28},{"k":51,"w":"distance","acc":79.87,"sd":0.43},{"k":101,"w":"uniform","acc":80.58,"sd":0.28},{"k":101,"w":"distance","acc":79.55,"sd":0.33},{"k":201,"w":"uniform","acc":79.93,"sd":0.44},{"k":201,"w":"distance","acc":79.08,"sd":0.38}],"best":{"k":31,"w":"uniform","acc_cv":81.2},"acc_test":80.9,"cm":[[7287,1150],[1566,4242]],"cm_base":[[8437,0],[5808,0]],"reporte":{"0":{"precision":0.8231108098949509,"recall":0.8636956264074909,"f1-score":0.8429149797570851,"support":8437.0},"1":{"precision":0.7867210682492581,"recall":0.7303719008264463,"f1-score":0.7575,"support":5808.0},"accuracy":0.8093366093366093,"macro avg":{"precision":0.8049159390721046,"recall":0.7970337636169686,"f1-score":0.8002074898785425,"support":14245.0},"weighted avg":{"precision":0.8082739113706839,"recall":0.8093366093366093,"f1-score":0.8080894127209916,"support":14245.0}},"reporte_base":{"0":{"precision":0.5922779922779923,"recall":1.0,"f1-score":0.7439379243452958,"support":8437.0},"1":{"precision":0.0,"recall":0.0,"f1-score":0.0,"support":5808.0},"accuracy":0.5922779922779923,"macro avg":{"precision":0.29613899613899614,"recall":0.5,"f1-score":0.3719689621726479,"support":14245.0},"weighted avg":{"precision":0.3507932201368495,"recall":0.5922779922779923,"f1-score":0.4406180602106887,"support":14245.0}},"perfil_err":{"edad":[40.33,35.76],"horas":[37.96,28.93],"antiguedad":[5.24,4.33],"nivel_ed":[4.25,3.48],"tamano":[1.88,0.87],"tamano_sin_dato":[0.13,0.34],"mujer":[0.41,0.52],"jefe_hogar":[0.49,0.34],"estatal":[0.23,0.02],"migrante":[0.05,0.03],"servicio_domestico":[0.01,0.28],"construccion":[0.04,0.18],"comercio_gastronomia":[0.19,0.28]},"recall_tam":{"Sin dato":{"recall":87.5,"acc":78.0},"Hasta 5":{"recall":89.3,"acc":78.5},"6 a 40":{"recall":51.9,"acc":77.6},"Más de 40":{"recall":16.9,"acc":87.8}},"recall_estatal":{"0":{"recall":77.4,"acc":77.9},"1":{"recall":22.5,"acc":89.4}},"importancia":[{"v":"tamano","m":6.63,"sd":0.05},{"v":"servicio_domestico","m":3.14,"sd":0.08},{"v":"antiguedad","m":2.8,"sd":0.14},{"v":"horas","m":2.76,"sd":0.13},{"v":"nivel_ed","m":1.98,"sd":0.16},{"v":"estatal","m":1.48,"sd":0.08},{"v":"edad","m":1.02,"sd":0.08},{"v":"construccion","m":0.85,"sd":0.07},{"v":"tamano_sin_dato","m":0.53,"sd":0.05},{"v":"comercio_gastronomia","m":0.49,"sd":0.07},{"v":"jefe_hogar","m":0.43,"sd":0.03},{"v":"mujer","m":0.38,"sd":0.07},{"v":"migrante","m":-0.08,"sd":0.05}],"n_informales":48739,"codigo":{"datos":[{"t":"Librerías y semilla","c":"# Librerías para EDA\nimport numpy as np\nimport pandas as pd\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\n# Settings generales para visualizar\nsns.set_theme(style=\"whitegrid\")\npd.set_option(\"display.float_format\", \"{:.2f}\".format)\n\n# Librerías para Machine Learning\nfrom sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score, GridSearchCV\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.inspection import permutation_importance\n\n# Métricas de clasificación\nfrom sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay, classification_report\n\nSEMILLA = 42"},{"t":"Cómo armamos el CSV: concat y merge","c":"trimestres = [\"T124\", \"T224\", \"T324\", \"T424\", \"T125\", \"T225\", \"T325\", \"T425\", \"T126\"]\n\nlista_personas, lista_hogares = [], []\nfor t in trimestres:\n    lista_personas.append(pd.read_csv(f\"data/usu_individual_{t}.txt\", sep=\";\", low_memory=False, encoding=\"latin-1\"))\n    lista_hogares.append(pd.read_csv(f\"data/usu_hogar_{t}.txt\", sep=\";\", low_memory=False, encoding=\"latin-1\"))\n\npersonas = pd.concat(lista_personas, axis=0, ignore_index=True)\nhogares = pd.concat(lista_hogares, axis=0, ignore_index=True)\npersonas.columns = personas.columns.str.strip().str.upper()\nhogares.columns = hogares.columns.str.strip().str.upper()\n\ncolumnas = [\"CODUSU\", \"NRO_HOGAR\", \"COMPONENTE\", \"ANO4\", \"TRIMESTRE\", \"REGION\",\n            \"CH03\", \"CH04\", \"CH06\", \"CH15\", \"NIVEL_ED\", \"ESTADO\", \"CAT_OCUP\",\n            \"PP04A\", \"PP04B_COD\", \"PP04C\", \"PP04C99\", \"PP07A\", \"PP3E_TOT\", \"PP07H\"]\nclave = [\"CODUSU\", \"NRO_HOGAR\", \"ANO4\", \"TRIMESTRE\"]\n\ndf = pd.merge(personas[columnas], hogares[clave + [\"IX_TOT\", \"IX_MEN10\", \"II7\"]],\n              on=clave, how=\"left\", validate=\"m:1\")\ndf.to_csv(\"data/eph_2024_2026.csv\", index=False)"},{"t":"Cargar el CSV","c":"# CSV unificado (9 trimestres, personas + hogares)\n# Se lee de la carpeta data/ del repositorio; si no está, se descarga de Google Drive\nimport os\n\nfile_id = \"1bC3oNIHW-I7LqynUj190ND8TDwSl2sF6\"\nruta_local = \"data/eph_2024_2026.csv\"\narchivos = ruta_local if os.path.exists(ruta_local) else f\"https://drive.google.com/uc?export=download&id={file_id}\"\ndf = pd.read_csv(archivos)\nprint(f\"Dataset: {df.shape[0]:,} filas x {df.shape[1]} columnas\")\ndf.head()"}],"calidad":[{"t":"Nulos","c":"nulos = df.isna().sum().to_frame(\"nulos\")\nnulos[\"%\"] = (nulos[\"nulos\"] / len(df) * 100).round(1)\nnulos[nulos[\"nulos\"] > 0]\n\n# ¿Los nulos de las variables laborales coinciden con las personas que no trabajan?\nprint(\"Personas no ocupadas (ESTADO distinto de 1):\", (df[\"ESTADO\"] != 1).sum())\nprint(\"Nulos en PP07H:                             \", df[\"PP07H\"].isna().sum())"},{"t":"Universo de análisis: asalariados","c":"filas_antes = len(df)\ndf = df[(df[\"ESTADO\"] == 1) & (df[\"CAT_OCUP\"] == 3)].copy()\nprint(f\"Asalariados: {len(df):,} de {filas_antes:,} filas ({len(df) / filas_antes:.0%})\")"},{"t":"Duplicados","c":"df[\"id_persona\"] = df[\"CODUSU\"] + \"_\" + df[\"NRO_HOGAR\"].astype(str) + \"_\" + df[\"COMPONENTE\"].astype(str)\n\nprint(\"Filas duplicadas completas:            \", df.duplicated().sum())\nprint(\"Persona repetida en el mismo trimestre:\", df.duplicated([\"id_persona\", \"ANO4\", \"TRIMESTRE\"]).sum())\nprint(\"Persona repetida entre trimestres:     \", df.duplicated(\"id_persona\").sum())"},{"t":"Códigos especiales y valores imposibles","c":"problemas = pd.DataFrame({\n    \"PP07H (y) sin respuesta (0 o 9)\":           (~df[\"PP07H\"].isin([1, 2])).sum(),\n    \"CH06 edad menor a 14\":                       (df[\"CH06\"] < 14).sum(),\n    \"PP3E_TOT horas = 999 (no responde)\":         (df[\"PP3E_TOT\"] == 999).sum(),\n    \"PP3E_TOT horas entre 99 y 998 (imposible)\":  df[\"PP3E_TOT\"].between(99, 998).sum(),\n    \"PP04C tamaño = 0 o 99 (no sabe)\":            df[\"PP04C\"].isin([0, 99]).sum(),\n    \"  ... y PP04C99 tampoco lo sabe\":            (df[\"PP04C\"].isin([0, 99]) & df[\"PP04C99\"].isin([0, 9])).sum(),\n    \"PP07A antigüedad = 0 o 9 (sin dato)\":        df[\"PP07A\"].isin([0, 9]).sum(),\n    \"PP04B_COD rama sin código\":                  df[\"PP04B_COD\"].isna().sum(),\n    \"CH15 nacimiento = 9 (no sabe)\":              (df[\"CH15\"] == 9).sum(),\n}, index=[\"casos\"]).T\nproblemas[\"% de asalariados\"] = (problemas[\"casos\"] / len(df) * 100).round(2)\nproblemas"},{"t":"Criterio de Tukey para las horas","c":"horas_validas = df.loc[df[\"PP3E_TOT\"] < 999, \"PP3E_TOT\"]\n\nQ1 = horas_validas.quantile(0.25)\nQ3 = horas_validas.quantile(0.75)\nRIC = Q3 - Q1\nlimite_inf = Q1 - 1.5 * RIC\nlimite_sup = Q3 + 1.5 * RIC\n\nprint(f\"Q1 = {Q1:.0f} h | Q3 = {Q3:.0f} h | RIC = {RIC:.0f} h\")\nprint(f\"Límites de Tukey: {limite_inf:.0f} h a {limite_sup:.0f} h\")\nprint(f\"Outliers según Tukey: {((horas_validas < limite_inf) | (horas_validas > limite_sup)).sum():,}\")"},{"t":"Limpieza y transformación de variables","c":"# --- Filtros de calidad ---\ndf = df[df[\"PP07H\"].isin([1, 2]) & (df[\"CH06\"] >= 14)].copy()\n\n# --- Variable objetivo: 1 = informal (sin descuento jubilatorio), 0 = formal ---\ndf[\"informal\"] = (df[\"PP07H\"] == 2).astype(int)\n\n# --- Fecha del trimestre (para la serie de tiempo) ---\ndf[\"periodo\"] = df[\"ANO4\"].astype(str) + \"-T\" + df[\"TRIMESTRE\"].astype(str)\n\n# --- Numéricas ---\ndf[\"edad\"] = df[\"CH06\"]\ndf[\"horas\"] = df[\"PP3E_TOT\"].where(df[\"PP3E_TOT\"] <= 98)          # 999 y > 98 -> nulo\ndf[\"miembros_hogar\"] = df[\"IX_TOT\"]\ndf[\"menores_10\"] = df[\"IX_MEN10\"]\n\n# --- Ordinales con .map() ---\n# Nivel educativo: el código 7 de la EPH es \"sin instrucción\", lo pasamos a 0\ndf[\"nivel_ed\"] = df[\"NIVEL_ED\"].map({7: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6})\n# Antigüedad: 1 = menos de 1 mes ... 6 = más de 5 años (0 y 9 quedan como nulo)\ndf[\"antiguedad\"] = df[\"PP07A\"].map({1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6})\n\n# Tamaño del establecimiento: 1 = hasta 5 personas, 2 = de 6 a 40, 3 = más de 40\ndf[\"tamano\"] = df[\"PP04C\"].map({1: 1, 2: 1, 3: 1, 4: 1, 5: 1,\n                                6: 2, 7: 2, 8: 2,\n                                9: 3, 10: 3, 11: 3, 12: 3})\n# Si no sabe el número exacto, usamos la pregunta de respaldo por rangos (PP04C99)\ndf[\"tamano\"] = df[\"tamano\"].fillna(df[\"PP04C99\"].map({1: 1, 2: 2, 3: 3}))\ndf[\"tamano_sin_dato\"] = df[\"tamano\"].isna().astype(int)\ndf[\"tamano\"] = df[\"tamano\"].fillna(0).astype(int)   # 0 = sin dato (lo marca la columna tamano_sin_dato)\n\n# --- Binarias 0/1 ---\ndf[\"mujer\"] = (df[\"CH04\"] == 2).astype(int)\ndf[\"jefe_hogar\"] = (df[\"CH03\"] == 1).astype(int)\ndf[\"estatal\"] = (df[\"PP04A\"] == 1).astype(int)\ndf[\"migrante\"] = df[\"CH15\"].isin([4, 5]).astype(int)                 # nació en otro país\ndf[\"propietario\"] = df[\"II7\"].isin([1, 2]).astype(int)               # propietario de la vivienda\n\n# Rama: los dos primeros dígitos del código CAES indican la división de actividad\ndivision = df[\"PP04B_COD\"] // 100\ndf[\"servicio_domestico\"] = (division == 97).astype(int)\ndf[\"construccion\"] = division.between(40, 43).astype(int)\ndf[\"comercio_gastronomia\"] = (division.between(45, 48) | division.between(55, 56)).astype(int)\n\n# --- Etiquetas legibles (solo para el EDA) ---\ndf[\"region\"] = df[\"REGION\"].map({1: \"GBA\", 40: \"NOA\", 41: \"NEA\", 42: \"Cuyo\", 43: \"Pampeana\", 44: \"Patagonia\"})\ndf[\"condicion\"] = df[\"informal\"].map({0: \"Formal\", 1: \"Informal\"})\ndf[\"sexo\"] = df[\"mujer\"].map({0: \"Varón\", 1: \"Mujer\"})\n\n# --- Eliminamos los pocos casos sin rama, horas o lugar de nacimiento ---\ndf = df[df[\"PP04B_COD\"].notna() & df[\"horas\"].notna() & (df[\"CH15\"] != 9)].copy()\n\nprint(f\"Asalariados después de la limpieza: {len(df):,}\")"},{"t":"Listas de variables y dataset limpio","c":"NUMERICAS = [\"edad\", \"horas\", \"antiguedad\", \"nivel_ed\", \"tamano\", \"miembros_hogar\", \"menores_10\"]\nBINARIAS = [\"tamano_sin_dato\", \"mujer\", \"jefe_hogar\", \"estatal\", \"migrante\", \"propietario\",\n            \"servicio_domestico\", \"construccion\", \"comercio_gastronomia\"]\nVARIABLES = NUMERICAS + BINARIAS          # todas: las usamos en el EDA\nHOGAR = [\"miembros_hogar\", \"menores_10\", \"propietario\"]\nVARIABLES_MODELO = [v for v in VARIABLES if v not in HOGAR]   # las que entran al modelo (ver paso 5.2)\n\ndatos = df[[\"id_persona\", \"ANO4\", \"TRIMESTRE\", \"periodo\", \"region\", \"sexo\", \"condicion\"] + VARIABLES + [\"informal\"]]\ndatos = datos.reset_index(drop=True)\nprint(f\"Dataset limpio: {datos.shape[0]:,} filas x {datos.shape[1]} columnas\")\nprint(\"\\nNulos que quedan:\")\nprint(datos.isna().sum()[datos.isna().sum() > 0])\ndatos.head()"}],"exploracion":[{"t":"Medianas según la condición","c":"plt.figure(figsize=(14, 4))\n\nplt.subplot(1, 2, 1)\nsns.boxplot(data=datos, x=\"edad\", y=\"condicion\", order=[\"Formal\", \"Informal\"])\nplt.title(\"Edad según condición\")\nplt.ylabel(\"\")\n\nplt.subplot(1, 2, 2)\nsns.boxplot(data=datos, x=\"horas\", y=\"condicion\", order=[\"Formal\", \"Informal\"])\nplt.title(\"Horas semanales según condición\")\nplt.ylabel(\"\")\n\nplt.tight_layout()\nplt.show()\n\ndatos.groupby(\"condicion\")[[\"edad\", \"horas\", \"antiguedad\", \"nivel_ed\"]].median()"},{"t":"Scatterplot de edad contra horas","c":"# Scatterplot edad vs horas (muestra de 3.000 personas para que se vea)\nmuestra = datos.sample(3000, random_state=SEMILLA)\n\nplt.figure(figsize=(9, 6))\nsns.scatterplot(data=muestra, x=\"edad\", y=\"horas\", hue=\"condicion\",\n                hue_order=[\"Formal\", \"Informal\"], alpha=0.5, s=15)\nplt.title(\"Edad vs horas semanales, según condición\")\nplt.show()"}],"relaciones":[{"t":"Tasa de informalidad por grupo: groupby + agg","c":"def tasa_por(variable):\n    tabla = (\n        datos.groupby(variable, as_index=False)\n        .agg(personas=(\"informal\", \"count\"),\n             tasa_informal=(\"informal\", \"mean\"))\n    )\n    tabla[\"tasa_informal\"] = (tabla[\"tasa_informal\"] * 100).round(1)\n    return tabla"},{"t":"Tasa por tamaño y por nivel educativo","c":"# Nivel educativo y tamaño del establecimiento\nnombres_ed = {0: \"Sin instrucción\", 1: \"Primario inc.\", 2: \"Primario comp.\", 3: \"Secundario inc.\",\n              4: \"Secundario comp.\", 5: \"Universitario inc.\", 6: \"Universitario comp.\"}\nnombres_tam = {0: \"Sin dato\", 1: \"Hasta 5\", 2: \"6 a 40\", 3: \"Más de 40\"}\n\ntasa_ed = tasa_por(\"nivel_ed\")\ntasa_ed[\"nivel_ed\"] = tasa_ed[\"nivel_ed\"].map(nombres_ed)\ntasa_tam = tasa_por(\"tamano\")\ntasa_tam[\"tamano\"] = tasa_tam[\"tamano\"].map(nombres_tam)\n\nplt.figure(figsize=(14, 5))\n\nplt.subplot(1, 2, 1)\nax = sns.barplot(data=tasa_ed, x=\"tasa_informal\", y=\"nivel_ed\", color=\"indianred\")\nax.bar_label(ax.containers[0], fmt=\"%.0f%%\", padding=3)\nplt.title(\"Tasa de informalidad por nivel educativo\")\nplt.xlabel(\"% informal\")\nplt.ylabel(\"\")\n\nplt.subplot(1, 2, 2)\nax = sns.barplot(data=tasa_tam, x=\"tasa_informal\", y=\"tamano\", color=\"indianred\",\n                 order=[\"Hasta 5\", \"6 a 40\", \"Más de 40\", \"Sin dato\"])\nax.bar_label(ax.containers[0], fmt=\"%.0f%%\", padding=3)\nplt.title(\"Tasa de informalidad por tamaño del establecimiento\")\nplt.xlabel(\"% informal\")\nplt.ylabel(\"\")\n\nplt.tight_layout()\nplt.show()"},{"t":"Tasa por región y por grupo de edad","c":"# Región y grupo de edad (pd.cut convierte la edad en rangos)\ndatos[\"grupo_edad\"] = pd.cut(datos[\"edad\"], bins=[13, 24, 34, 44, 54, 64, 120],\n                             labels=[\"14-24\", \"25-34\", \"35-44\", \"45-54\", \"55-64\", \"65+\"])\n\ntasa_region = tasa_por(\"region\").sort_values(\"tasa_informal\", ascending=False)\ntasa_edad = tasa_por(\"grupo_edad\")\n\nplt.figure(figsize=(14, 5))\n\nplt.subplot(1, 2, 1)\nax = sns.barplot(data=tasa_region, x=\"tasa_informal\", y=\"region\", color=\"indianred\")\nax.bar_label(ax.containers[0], fmt=\"%.0f%%\", padding=3)\nplt.title(\"Tasa de informalidad por región\")\nplt.xlabel(\"% informal\")\nplt.ylabel(\"\")\n\nplt.subplot(1, 2, 2)\nax = sns.barplot(data=tasa_edad, x=\"tasa_informal\", y=\"grupo_edad\", color=\"indianred\")\nax.bar_label(ax.containers[0], fmt=\"%.0f%%\", padding=3)\nplt.title(\"Tasa de informalidad por grupo de edad\")\nplt.xlabel(\"% informal\")\nplt.ylabel(\"\")\n\nplt.tight_layout()\nplt.show()"},{"t":"Variables binarias: con y sin la característica","c":"# Variables binarias: tasa de informalidad cuando la variable vale 0 y cuando vale 1\nfilas = []\nfor v in BINARIAS:\n    filas.append({\"variable\": v,\n                  \"tasa si = 0\": datos.loc[datos[v] == 0, \"informal\"].mean() * 100,\n                  \"tasa si = 1\": datos.loc[datos[v] == 1, \"informal\"].mean() * 100})\ntabla_binarias = pd.DataFrame(filas).round(1)\ntabla_binarias[\"diferencia\"] = tabla_binarias[\"tasa si = 1\"] - tabla_binarias[\"tasa si = 0\"]\ntabla_binarias.sort_values(\"diferencia\", ascending=False)"},{"t":"Matriz de correlación","c":"corr_matrix = datos[VARIABLES + [\"informal\"]].corr()\n\nplt.figure(figsize=(12, 10))\nsns.heatmap(corr_matrix, annot=True, fmt=\".2f\", cmap=\"RdBu_r\", vmin=-1, vmax=1, center=0)\nplt.title(\"Matriz de correlación\")\nplt.show()\n\n# Correlación de cada variable con la variable objetivo, ordenada por fuerza\ncorr_matrix[\"informal\"].drop(\"informal\").sort_values(key=abs, ascending=False).round(2).to_frame()"},{"t":"Serie de tiempo","c":"serie = (\n    datos.groupby([\"periodo\", \"sexo\"], as_index=False)\n    .agg(tasa_informal=(\"informal\", \"mean\"))\n)\nserie[\"tasa_informal\"] = serie[\"tasa_informal\"] * 100\n\nserie_total = datos.groupby(\"periodo\", as_index=False).agg(tasa_informal=(\"informal\", \"mean\"))\nserie_total[\"tasa_informal\"] = serie_total[\"tasa_informal\"] * 100\nserie_total[\"sexo\"] = \"Total\"\n\nserie = pd.concat([serie, serie_total], ignore_index=True)\n\nplt.figure(figsize=(10, 5))\nsns.lineplot(data=serie, x=\"periodo\", y=\"tasa_informal\", hue=\"sexo\", marker=\"o\", linewidth=2.5)\nplt.ylim(0, 50)\nplt.title(\"Tasa de informalidad de asalariados por trimestre\")\nplt.xlabel(\"Trimestre\")\nplt.ylabel(\"% informal\")\nplt.legend(title=\"\")\nplt.show()\n\nserie.pivot(index=\"periodo\", columns=\"sexo\", values=\"tasa_informal\").round(1)"}],"modelo":[{"t":"Una fila por persona","c":"datos_modelo = (\n    datos.sort_values([\"ANO4\", \"TRIMESTRE\"])\n    .drop_duplicates(subset=\"id_persona\", keep=\"last\")\n    .reset_index(drop=True)\n)\nprint(f\"Filas antes:   {len(datos):,}\")\nprint(f\"Personas únicas para el modelo: {len(datos_modelo):,}\")\nprint(f\"% informal: {datos_modelo['informal'].mean():.1%}\")"},{"t":"X, y y split 80/20","c":"# Variables independientes o predictoras X\nX = datos_modelo[VARIABLES_MODELO]\n\n# Variable objetivo o variable respuesta y\ny = datos_modelo[\"informal\"]\n\n# Split 80/20 estratificado\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=SEMILLA, stratify=y)\n\nprint(\"Train:\", X_train.shape, \" Test:\", X_test.shape)\npd.DataFrame({\n    \"train\": y_train.value_counts(normalize=True),\n    \"test\": y_test.value_counts(normalize=True),\n}).round(3)"},{"t":"Completar la antigüedad con la mediana de train","c":"mediana_antiguedad = X_train[\"antiguedad\"].median()\nprint(f\"Mediana de antigüedad en train: {mediana_antiguedad}\")\n\nX_train = X_train.fillna({\"antiguedad\": mediana_antiguedad})\nX_test = X_test.fillna({\"antiguedad\": mediana_antiguedad})\n\nprint(\"Nulos en X_train:\", X_train.isna().sum().sum(), \"| Nulos en X_test:\", X_test.isna().sum().sum())"},{"t":"Baseline","c":"baseline = DummyClassifier(strategy=\"most_frequent\")\nbaseline.fit(X_train, y_train)\n\nacc_baseline = accuracy_score(y_test, baseline.predict(X_test))\nprint(f\"Baseline (siempre {baseline.predict(X_test)[0]} = formal): {acc_baseline:.1%}\")"},{"t":"k-NN sin escalar y con Pipeline","c":"# k-NN sin escalar\nknn_crudo = KNeighborsClassifier(n_neighbors=5)\nknn_crudo.fit(X_train, y_train)\nacc_crudo = accuracy_score(y_test, knn_crudo.predict(X_test))\n\n# k-NN escalado con Pipeline\npipe = Pipeline([\n    (\"scaler\", StandardScaler()),\n    (\"knn\", KNeighborsClassifier(n_neighbors=5)),\n])\npipe.fit(X_train, y_train)\nacc_escalado = accuracy_score(y_test, pipe.predict(X_test))\n\nprint(f\"Baseline:              {acc_baseline:.1%}\")\nprint(f\"k-NN k=5 sin escalar:  {acc_crudo:.1%}\")\nprint(f\"k-NN k=5 escalado:     {acc_escalado:.1%}\")"},{"t":"Validación cruzada con k = 5","c":"kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEMILLA)\n\nscores = cross_val_score(pipe, X_train, y_train, cv=kfold, scoring=\"accuracy\")\n\nprint(\"Accuracy de cada ronda:\", scores.round(3))\nprint(f\"Promedio: {scores.mean():.1%} ± {scores.std():.1%}\")"},{"t":"GridSearchCV para elegir k","c":"grilla = {\n    \"knn__n_neighbors\": [1, 5, 15, 31, 51, 101, 201],\n    \"knn__weights\": [\"uniform\", \"distance\"],\n}\n\nbusqueda = GridSearchCV(pipe, grilla, cv=kfold, scoring=\"accuracy\")\nbusqueda.fit(X_train, y_train)\n\nprint(\"Mejores hiperparámetros:\", busqueda.best_params_)\nprint(f\"Accuracy de validación:  {busqueda.best_score_:.1%}\")"},{"t":"Los vecinos de una persona de test","c":"i = 0\npersona = X_test.iloc[[i]]\n\npersona_escalada = mejor_knn.named_steps[\"scaler\"].transform(persona)\ndistancias, posiciones = mejor_knn.named_steps[\"knn\"].kneighbors(persona_escalada)\n\nvecinos = X_train.iloc[posiciones[0]].copy()\nvecinos[\"informal\"] = y_train.iloc[posiciones[0]].values\n\nprint(f\"Persona de test: real = {y_test.iloc[i]} | predicción = {y_pred[i]}\")\nprint(f\"De sus {len(vecinos)} vecinos, {vecinos['informal'].sum()} son informales\")\npersona"},{"t":"Usar el modelo con perfiles nuevos","c":"perfiles = pd.DataFrame([\n    {\"edad\": 22, \"horas\": 30, \"antiguedad\": 3, \"nivel_ed\": 3, \"tamano\": 1,\n     \"tamano_sin_dato\": 0, \"mujer\": 1, \"jefe_hogar\": 0, \"estatal\": 0, \"migrante\": 0,\n     \"servicio_domestico\": 0, \"construccion\": 0, \"comercio_gastronomia\": 1},\n    {\"edad\": 40, \"horas\": 45, \"antiguedad\": 6, \"nivel_ed\": 6, \"tamano\": 3,\n     \"tamano_sin_dato\": 0, \"mujer\": 0, \"jefe_hogar\": 1, \"estatal\": 0, \"migrante\": 0,\n     \"servicio_domestico\": 0, \"construccion\": 0, \"comercio_gastronomia\": 0},\n], index=[\"Joven en un comercio chico\", \"Profesional en una empresa grande\"])\n\nperfiles[\"prediccion\"] = mejor_knn.predict(perfiles[VARIABLES_MODELO])\nperfiles[\"prediccion\"] = perfiles[\"prediccion\"].map({0: \"Formal\", 1: \"Informal\"})\nperfiles[[\"edad\", \"nivel_ed\", \"tamano\", \"comercio_gastronomia\", \"prediccion\"]]"}],"evaluacion":[{"t":"Predecir sobre test","c":"mejor_knn = busqueda.best_estimator_\ny_pred = mejor_knn.predict(X_test)\n\ny_pred[:10]"},{"t":"Accuracy contra el baseline","c":"acc_knn = accuracy_score(y_test, y_pred)\nk_mejor = busqueda.best_params_[\"knn__n_neighbors\"]\n\nprint(\"Accuracy / exactitud en test:\")\nprint(f\"Baseline (siempre formal):  {acc_baseline:.1%}\")\nprint(f\"k-NN k=5 sin escalar:       {acc_crudo:.1%}\")\nprint(f\"k-NN k=5 escalado:          {acc_escalado:.1%}\")\nprint(f\"Mejor k-NN (k={k_mejor}, CV):     {acc_knn:.1%}\")\nprint(f\"\\nAciertos: {(y_test == y_pred).sum():,} de {len(y_test):,}\")"},{"t":"Matriz de confusión","c":"nombres = [\"Formal\", \"Informal\"]   # 0 y 1\n\nfig, axes = plt.subplots(1, 2, figsize=(12, 5))\nConfusionMatrixDisplay.from_predictions(y_test, baseline.predict(X_test), display_labels=nombres,\n                                        ax=axes[0], cmap=\"Blues\", colorbar=False)\naxes[0].set_title(\"Baseline (siempre formal)\")\nConfusionMatrixDisplay.from_predictions(y_test, y_pred, display_labels=nombres,\n                                        ax=axes[1], cmap=\"Blues\", colorbar=False)\naxes[1].set_title(f\"k-NN (k={k_mejor}) elegido con validación cruzada\")\nfor ax in axes:\n    ax.set_xlabel(\"Predicho\")\n    ax.set_ylabel(\"Real\")\nplt.tight_layout()\nplt.show()\n\ncm = confusion_matrix(y_test, y_pred)\npd.DataFrame(cm, index=[\"real Formal\", \"real Informal\"], columns=[\"pred Formal\", \"pred Informal\"])"},{"t":"classification_report","c":"print(\"k-NN:\")\nprint(classification_report(y_test, y_pred, target_names=nombres, digits=3))\n\nprint(\"Baseline (siempre formal):\")\nprint(classification_report(y_test, baseline.predict(X_test), target_names=nombres, digits=3, zero_division=0))"}],"errores":[{"t":"Perfil de los informales no detectados","c":"# Los informales que el modelo predijo como formales\nerror = (y_test == 1) & (y_pred == 0)\ndetectados = (y_test == 1) & (y_pred == 1)\nprint(\"Informales no detectados:\", error.sum())\nprint(\"Informales detectados:   \", detectados.sum())\n\npd.DataFrame({\n    \"no detectados (promedio)\": X_test[error].mean(),\n    \"detectados (promedio)\": X_test[detectados].mean(),\n}).round(2)"},{"t":"Accuracy y recall por grupo","c":"test = datos_modelo.loc[X_test.index].copy()\ntest[\"prediccion\"] = y_pred\ntest[\"acierto\"] = (test[\"prediccion\"] == test[\"informal\"]).astype(int)\ntest[\"tamano_txt\"] = test[\"tamano\"].map(nombres_tam)\n\ndef errores_por(variable):\n    tabla = test.groupby(variable, as_index=False).agg(personas=(\"acierto\", \"count\"),\n                                                      accuracy=(\"acierto\", \"mean\"))\n    detectados = (test[test[\"informal\"] == 1]\n                  .groupby(variable, as_index=False)\n                  .agg(recall_informal=(\"prediccion\", \"mean\")))\n    tabla = pd.merge(tabla, detectados, on=variable, how=\"left\")\n    return tabla.round(2)\n\nerrores_por(\"tamano_txt\")\n\nerrores_por(\"estatal\")"},{"t":"Importancia por permutación","c":"imp = permutation_importance(mejor_knn, X_test, y_test, scoring=\"accuracy\",\n                             n_repeats=5, random_state=SEMILLA, n_jobs=-1)\n\nimportancias = pd.DataFrame({\n    \"variable\": X_test.columns,\n    \"caida_accuracy\": imp.importances_mean * 100,   # en puntos porcentuales\n    \"desvio\": imp.importances_std * 100,\n}).sort_values(\"caida_accuracy\", ascending=False)\n\nplt.figure(figsize=(9, 6))\nax = sns.barplot(data=importancias, x=\"caida_accuracy\", y=\"variable\", color=\"steelblue\")\nax.bar_label(ax.containers[0], fmt=\"%.1f\", padding=3)\nplt.title(\"Importancia por permutación: cuánto cae el accuracy al mezclar cada variable (test)\")\nplt.xlabel(\"Puntos de accuracy que se pierden\")\nplt.ylabel(\"\")\nplt.show()\n\nimportancias.round(2)"}]},"integrantes":["Marcos López","Joaquín Orozco","Marcos Sada","Matias Zaniboni","Pedro Zanlungo"],"perfiles_pred":{"joven":"Informal","profesional":"Formal"}}</script>
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("datos-json").textContent);
+  var NS = "http://www.w3.org/2000/svg";
+
+  // ---------- formato ----------
+  function n0(v) { return Math.round(v).toLocaleString("es-AR"); }
+  function p1(v) { return v.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " %"; }
+  function p0(v) { return Math.round(v).toLocaleString("es-AR") + " %"; }
+  function d2(v) { return v.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function set(id, txt) { var e = document.getElementById(id); if (e) e.textContent = txt; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  // ---------- svg ----------
+  function S(tag, a, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in a) if (a[k] !== undefined && a[k] !== null) e.setAttribute(k, a[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function T(parent, x, y, txt, cls, anchor) {
+    var t = S("text", { x: x, y: y, "class": cls, "text-anchor": anchor || "start" }, parent);
+    t.textContent = txt; return t;
+  }
+  function svgFor(plot, W, H, label) {
+    var s = S("svg", { width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": label || "" });
+    plot.replaceChildren(s); return s;
+  }
+  function ticks(min, max, n) {
+    var span = max - min, raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw)));
+    var m = [1, 2, 2.5, 5, 10].find(function (x) { return x * p >= raw - 1e-12; }), step = m * p, out = [];
+    for (var v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  // barra horizontal: base cuadrada, punta redondeada (4px)
+  function hPath(x0, y, w, h) {
+    var r = Math.min(4, w, h / 2);
+    if (w <= 0) return "";
+    return "M" + x0 + "," + y + "H" + (x0 + w - r) + "Q" + (x0 + w) + "," + y + " " + (x0 + w) + "," + (y + r) +
+      "V" + (y + h - r) + "Q" + (x0 + w) + "," + (y + h) + " " + (x0 + w - r) + "," + (y + h) + "H" + x0 + "Z";
+  }
+  function fill(el, v) { el.style.fill = "var(" + v + ")"; return el; }
+
+  // ---------- tooltip ----------
+  var tip = document.getElementById("tip");
+  function showTip(e, txt) {
+    tip.textContent = txt; tip.hidden = false;
+    var x = e.clientX + 14, y = e.clientY + 14, r = tip.getBoundingClientRect();
+    if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - 14;
+    if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - 14;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  }
+  document.addEventListener("pointermove", function (e) {
+    var t = e.target.closest && e.target.closest("[data-tip]");
+    if (t) showTip(e, t.getAttribute("data-tip")); else tip.hidden = true;
+  });
+  document.addEventListener("pointerleave", function () { tip.hidden = true; });
+
+  // ---------- tablas y leyendas ----------
+  function tablaHTML(head, rows, caption) {
+    return "<table>" + (caption ? "<caption>" + caption + "</caption>" : "") + "<thead><tr>" +
+      head.map(function (x, i) { return "<th" + (i ? " class='r'" : "") + ">" + x + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      rows.map(function (r) { return "<tr>" + r.map(function (x, i) { return "<td" + (i ? " class='r'" : "") + ">" + x + "</td>"; }).join("") + "</tr>"; }).join("") +
+      "</tbody></table>";
+  }
+  function tabla(fig, head, rows) {
+    var d = fig.querySelector("details.datos"); if (!d) return;
+    d.innerHTML = "<summary>Ver tabla</summary><div class='tw'>" + tablaHTML(head, rows) + "</div>";
+  }
+  function leyenda(el, items) {
+    el.innerHTML = items.map(function (it) {
+      return "<span><i class='" + (it.line ? "ln" : "") + "' style='background:var(" + it.c + ")'></i>" + it.t + "</span>";
+    }).join("");
+  }
+  document.querySelectorAll("[data-ley='cond']").forEach(function (el) {
+    leyenda(el, [{ c: "--formal", t: "Formal" }, { c: "--informal", t: "Informal" }]);
+  });
+
+  // ---------- registro de gráficos (se redibujan al cambiar el ancho) ----------
+  var charts = [];
+  function chart(id, fn) {
+    var el = document.getElementById(id); if (!el) return;
+    charts.push({ el: el, fn: fn, w: 0 });
+  }
+  function drawAll() {
+    charts.forEach(function (c) {
+      var w = c.el.clientWidth;
+      if (w && Math.abs(w - c.w) > 1) { c.w = w; c.fn(c.el, w); }
+    });
+  }
+
+  // ---------- barras horizontales ----------
+  function hbar(plot, W, o) {
+    var lw = Math.min(o.labelW || 160, Math.round(W * 0.42)), rh = 34, bh = 20, top = o.ref ? 20 : 4, axisH = 22;
+    var H = top + o.rows.length * rh + axisH, x0 = lw + 10, x1 = W - 58;
+    var sx = function (v) { return x0 + (Math.max(0, v) / o.max) * (x1 - x0); };
+    var s = svgFor(plot, W, H, o.aria);
+    ticks(0, o.max, W < 420 ? 2 : 4).forEach(function (t) {
+      S("line", { x1: sx(t), x2: sx(t), y1: top, y2: H - axisH, "class": "g-grid" }, s);
+      T(s, sx(t), H - 6, o.tick ? o.tick(t) : t, "t-axis", "middle");
+    });
+    o.rows.forEach(function (r, i) {
+      var y = top + i * rh + (rh - bh) / 2;
+      T(s, lw, y + bh / 2 + 4.5, r.label, "t-label", "end");
+      var g = S("g", { "data-tip": r.tip || (r.label + ": " + o.fmt(r.value)) }, s);
+      S("rect", { x: 0, y: top + i * rh, width: W, height: rh, "class": "hit" }, g);
+      if (r.value > 0) fill(S("path", { d: hPath(x0, y, sx(r.value) - x0, bh) }, g), r.color || o.color);
+      if (r.sd) S("line", { x1: sx(r.value - r.sd), x2: sx(r.value + r.sd), y1: y + bh / 2, y2: y + bh / 2, "class": "g-ref" }, g);
+      T(g, sx(Math.max(0, r.value)) + 6, y + bh / 2 + 4.5, o.fmt(r.value), "t-value");
+    });
+    S("line", { x1: x0, x2: x0, y1: top, y2: H - axisH, "class": "g-axis" }, s);
+    if (o.ref) {
+      var rx = sx(o.ref.value);
+      S("line", { x1: rx, x2: rx, y1: top - 4, y2: H - axisH, "class": "g-ref" }, s);
+      T(s, rx, top - 8, o.ref.label, "t-note", rx > W - 120 ? "end" : "middle");
+    }
+  }
+
+  // ---------- dispersión ----------
+  function scatter(plot, W) {
+    var H = Math.min(340, Math.max(260, W * 0.66)), pl = 40, pr = 10, pt = 26, pb = 36;
+    var sx = function (v) { return pl + (v - 14) / (100 - 14) * (W - pl - pr); };
+    var sy = function (v) { return pt + (1 - v / 100) * (H - pt - pb); };
+    var s = svgFor(plot, W, H, "Dispersión de edad contra horas semanales");
+    ticks(0, 100, 4).forEach(function (t) { S("line", { x1: pl, x2: W - pr, y1: sy(t), y2: sy(t), "class": "g-grid" }, s); T(s, pl - 8, sy(t) + 4, t, "t-axis", "end"); });
+    [20, 40, 60, 80, 100].forEach(function (t) { T(s, sx(t), H - 18, t, "t-axis", "middle"); });
+    T(s, (W + pl) / 2, H - 2, "Edad (años)", "t-axis", "middle");
+    T(s, 0, 11, "Horas por semana", "t-axis", "start");
+    var semilla = 7;
+    function azar() { semilla = (semilla * 9301 + 49297) % 233280; return semilla / 233280; }
+    D.scatter.forEach(function (p) {
+      var c = S("circle", { cx: sx(p[0] + (azar() - 0.5) * 0.8), cy: sy(p[1] + (azar() - 0.5) * 0.8), r: 2.6, "fill-opacity": 0.5 }, s);
+      fill(c, p[2] ? "--informal" : "--formal");
+    });
+    S("line", { x1: pl, x2: W - pr, y1: sy(0), y2: sy(0), "class": "g-axis" }, s);
+  }
+
+  // ---------- puntos conectados (con y sin) ----------
+  function dumbbell(plot, W, o) {
+    var lw = Math.min(190, Math.round(W * 0.42)), rh = 32, top = 4, axisH = 22, x0 = lw + 14, x1 = W - 20;
+    var H = top + o.rows.length * rh + axisH, sx = function (v) { return x0 + v / 100 * (x1 - x0); };
+    var s = svgFor(plot, W, H, o.aria);
+    ticks(0, 100, W < 420 ? 2 : 4).forEach(function (t) {
+      S("line", { x1: sx(t), x2: sx(t), y1: top, y2: H - axisH, "class": "g-grid" }, s);
+      T(s, sx(t), H - 6, t + " %", "t-axis", "middle");
+    });
+    o.rows.forEach(function (r, i) {
+      var cy = top + i * rh + rh / 2;
+      T(s, lw, cy + 4.5, r.label, "t-label", "end");
+      var g = S("g", { "data-tip": r.label + "\nCon la característica: " + p1(r.b) + "\nSin la característica: " + p1(r.a) + "\nPersonas con la característica: " + p1(r.pct) }, s);
+      S("rect", { x: 0, y: top + i * rh, width: W, height: rh, "class": "hit" }, g);
+      S("line", { x1: sx(r.a), x2: sx(r.b), y1: cy, y2: cy, "class": "g-axis", "stroke-width": 2 }, g);
+      [[r.a, "--neutro"], [r.b, "--informal"]].forEach(function (d) {
+        var c = S("circle", { cx: sx(d[0]), cy: cy, r: 6, "stroke-width": 2 }, g);
+        fill(c, d[1]); c.style.stroke = "var(--surface)";
+      });
+    });
+  }
+
+  // ---------- mapa de calor ----------
+  var CORTO = { edad: "edad", horas: "horas", antiguedad: "antigüedad", nivel_ed: "nivel educ.", tamano: "tamaño", miembros_hogar: "miembros hogar",
+    menores_10: "menores 10", tamano_sin_dato: "tamaño s/dato", mujer: "mujer", jefe_hogar: "jefe hogar", estatal: "estatal", migrante: "migrante",
+    propietario: "propietario", servicio_domestico: "serv. doméstico", construccion: "construcción", comercio_gastronomia: "comercio/gastr.", informal: "informal" };
+  function heat(plot, Wc) {
+    var V = D.corr_vars, n = V.length, lw = 116, cell = Math.max(30, Math.min(40, Math.floor((Wc - lw - 64) / n))), th = 104;
+    var W = lw + n * cell + 64, H = th + n * cell;
+    var s = svgFor(plot, W, H, "Matriz de correlación entre las variables");
+    V.forEach(function (v, i) {
+      T(s, lw - 8, th + i * cell + cell / 2 + 4, CORTO[v], "t-label", "end");
+      var t = T(s, 0, 0, CORTO[v], "t-label", "start");
+      t.setAttribute("transform", "translate(" + (lw + i * cell + cell / 2 + 4) + "," + (th - 8) + ") rotate(-55)");
+    });
+    D.corr.forEach(function (row, i) {
+      row.forEach(function (r, j) {
+        var x = lw + j * cell, y = th + i * cell, a = Math.round(Math.min(1, Math.abs(r)) * 100);
+        var g = S("g", { "data-tip": CORTO[V[i]] + " × " + CORTO[V[j]] + ": " + d2(r) }, s);
+        var rc = S("rect", { x: x + 1, y: y + 1, width: cell - 2, height: cell - 2, rx: 3 }, g);
+        rc.style.fill = "color-mix(in oklab, var(" + (r < 0 ? "--div-neg" : "--div-pos") + ") " + a + "%, var(--div-mid))";
+        var txt = Math.abs(r) < 0.005 ? "0" : r.toFixed(2).replace("0.", ".").replace("-.", "−.");
+        var t = T(g, x + cell / 2, y + cell / 2 + 4, txt, "t-in", "middle");
+        t.style.fill = Math.abs(r) > 0.55 ? "var(--on-fill)" : "var(--ink-2)";
+        t.style.fontSize = cell < 34 ? "10px" : "11px";
+      });
+    });
+    var hl = S("rect", { x: lw, y: th + (n - 1) * cell, width: n * cell, height: cell, rx: 4, fill: "none", "stroke-width": 1.5 }, s);
+    hl.style.stroke = "var(--ink)";
+  }
+
+  // ---------- líneas ----------
+  function lines(plot, W, o) {
+    var H = o.H || 260, pl = 44, pr = 14, pt = 14, pb = 30, n = o.x.length;
+    var xs = function (i) { return pl + (i + 0.5) * (W - pl - pr) / n; };
+    var sy = function (v) { return pt + (1 - (v - o.ymin) / (o.ymax - o.ymin)) * (H - pt - pb); };
+    var s = svgFor(plot, W, H, o.aria);
+    ticks(o.ymin, o.ymax, 5).forEach(function (t) {
+      S("line", { x1: pl, x2: W - pr, y1: sy(t), y2: sy(t), "class": "g-grid" }, s);
+      T(s, pl - 8, sy(t) + 4, o.tick ? o.tick(t) : t, "t-axis", "end");
+    });
+    var every = Math.max(1, Math.ceil(n / Math.max(1, Math.floor((W - pl - pr) / (o.labelW || 60)))));
+    o.x.forEach(function (x, i) { if (i % every === 0) T(s, xs(i), H - 9, x, "t-axis", "middle"); });
+    o.series.forEach(function (sr) {
+      if (sr.lo) {
+        var d = sr.values.map(function (_, i) { return (i ? "L" : "M") + xs(i) + "," + sy(sr.hi[i]); }).join("") +
+          sr.values.map(function (_, k) { var i = n - 1 - k; return "L" + xs(i) + "," + sy(sr.lo[i]); }).join("") + "Z";
+        fill(S("path", { d: d, "fill-opacity": 0.12 }, s), sr.color);
+      }
+    });
+    S("line", { x1: pl, x2: W - pr, y1: H - pb, y2: H - pb, "class": "g-axis" }, s);
+    o.series.forEach(function (sr) {
+      var p = S("path", { d: sr.values.map(function (v, i) { return (i ? "L" : "M") + xs(i) + "," + sy(v); }).join(""), fill: "none", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
+      p.style.stroke = "var(" + sr.color + ")";
+      sr.values.forEach(function (v, i) {
+        var c = S("circle", { cx: xs(i), cy: sy(v), r: 4, "stroke-width": 2 }, s);
+        fill(c, sr.color); c.style.stroke = "var(--surface)";
+      });
+    });
+    if (o.mark) {
+      var mc = S("circle", { cx: xs(o.mark.i), cy: sy(o.mark.v), r: 8, fill: "none", "stroke-width": 1.5 }, s);
+      mc.style.stroke = "var(--ink)";
+      T(s, xs(o.mark.i), sy(o.mark.v) - 14, o.mark.label, "t-value", "middle");
+    }
+    var cross = S("line", { x1: 0, x2: 0, y1: pt, y2: H - pb, "class": "cross", visibility: "hidden" }, s);
+    o.x.forEach(function (x, i) {
+      var tipTxt = [o.xTip ? o.xTip(x) : x].concat(o.series.map(function (sr) { return sr.name + ": " + o.fmt(sr.values[i]); })).join("\n");
+      var r = S("rect", { x: xs(i) - (W - pl - pr) / n / 2, y: pt, width: (W - pl - pr) / n, height: H - pt - pb, "class": "hit", "data-tip": tipTxt }, s);
+      r.addEventListener("pointerenter", function () { cross.setAttribute("x1", xs(i)); cross.setAttribute("x2", xs(i)); cross.setAttribute("visibility", "visible"); });
+      r.addEventListener("pointerleave", function () { cross.setAttribute("visibility", "hidden"); });
+    });
+  }
+
+  // =================== contenido ===================
+  var formal = 100 - D.tasa_informal;
+  var rI = D.reporte["1"];
+
+  // Portada
+  document.getElementById("integrantes").innerHTML = D.integrantes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("");
+  document.getElementById("seg-hero").innerHTML =
+    "<div style='flex:" + formal + ";background:var(--formal)'>" + p0(formal) + "</div>" +
+    "<div style='flex:" + D.tasa_informal + ";background:var(--informal)'>" + p0(D.tasa_informal) + "</div>";
+  document.getElementById("seg-hero").setAttribute("aria-label", "Sí: " + p1(formal) + ". No: " + p1(D.tasa_informal));
+  leyenda(document.getElementById("seg-hero-ley"), [{ c: "--formal", t: "Sí, tiene descuento: formal" }, { c: "--informal", t: "No tiene descuento: informal" }]);
+  document.getElementById("stats-hero").innerHTML = [
+    [n0(D.asalariados_limpios), "asalariados encuestados en 9 trimestres, del 1T-2024 al 1T-2026"],
+    [p1(D.acc_test), "de accuracy en test, contra " + p1(D.acc_baseline) + " del baseline"],
+    [p0(rI.recall * 100), "de los informales detectados por el modelo"],
+    ["k = " + D.best.k, "vecinos, elegido con validación cruzada"]
+  ].map(function (s) { return "<div class='stat'><b>" + s[0] + "</b><span>" + s[1] + "</span></div>"; }).join("");
+
+  // Datos
+  document.getElementById("flujo").innerHTML = [
+    ["1", n0(D.filas_crudas), "filas: 9 trimestres de personas con 3 datos de su hogar, 23 columnas"],
+    ["2", n0(D.asalariados_brutos), "asalariados ocupados (<code>ESTADO = 1</code>, <code>CAT_OCUP = 3</code>)"],
+    ["3", n0(D.asalariados_limpios), "después de la limpieza: el universo de la exploración"],
+    ["4", n0(D.personas_modelo), "personas únicas, una fila por persona: el universo del modelo"]
+  ].map(function (p) { return "<div class='paso'><span class='n'>PASO " + p[0] + "</span><b>" + p[1] + "</b><span>" + p[2] + "</span></div>"; }).join("");
+
+  // Exploración
+  var M = D.medianas;
+  set("e-total", n0(D.asalariados_limpios));
+  set("e-inf", n0(D.n_informales) + " (" + p0(D.tasa_informal) + ")");
+  set("e-edad", n0(M.Informal.edad) + " años contra " + n0(M.Formal.edad));
+  set("e-horas", n0(M.Informal.horas) + " horas contra " + n0(M.Formal.horas));
+  set("e-media-h", D.resumen.horas.mean.toLocaleString("es-AR", { maximumFractionDigits: 1 }) + " h");
+  chart("c-scatter", scatter);
+
+  // Relaciones
+  chart("c-tasa-tam", function (el, W) {
+    hbar(el, W, { max: 100, color: "--informal", fmt: p0, tick: function (t) { return t + " %"; }, labelW: 110, aria: "Tasa de informalidad por tamaño del lugar de trabajo",
+      ref: { value: D.tasa_informal, label: "Promedio " + p0(D.tasa_informal) },
+      rows: D.tasa_tam.map(function (r) { return { label: r.g, value: r.tasa, tip: r.g + "\n" + p1(r.tasa) + " informal\n" + n0(r.n) + " personas" }; }) });
+  });
+  function tablaTasa(titulo, rows) {
+    return "<div class='tw'>" + tablaHTML(["Grupo", "Personas", "Informal"], rows.map(function (r) { return [r.g, n0(r.n), p1(r.tasa)]; }), titulo) + "</div>";
+  }
+  document.getElementById("tablas-tasas").innerHTML =
+    tablaTasa("Nivel educativo", D.tasa_ed) +
+    tablaTasa("Grupo de edad", D.tasa_edad.map(function (r) { return { g: r.g + " años", n: r.n, tasa: r.tasa }; })) +
+    tablaTasa("Región", D.tasa_region);
+
+  var NB = { servicio_domestico: "Servicio doméstico", construccion: "Construcción", tamano_sin_dato: "No sabe el tamaño", comercio_gastronomia: "Comercio o gastronomía",
+    migrante: "Nació en otro país", mujer: "Mujer", propietario: "Vivienda propia", jefe_hogar: "Jefe o jefa de hogar", estatal: "Trabaja en el Estado" };
+  leyenda(document.getElementById("ley-dumb"), [{ c: "--informal", t: "Con la característica" }, { c: "--neutro", t: "Sin la característica" }]);
+  tabla(document.getElementById("c-dumb").closest("figure"), ["Característica", "Sin", "Con", "Diferencia"],
+    D.binarias.map(function (b) { return [NB[b.v], p1(b.si0), p1(b.si1), (b.si1 - b.si0 > 0 ? "+" : "−") + Math.abs(b.si1 - b.si0).toLocaleString("es-AR", { maximumFractionDigits: 1 }) + " pp"]; }));
+  chart("c-dumb", function (el, W) {
+    dumbbell(el, W, { aria: "Tasa de informalidad con y sin cada característica", rows: D.binarias.map(function (b) { return { label: NB[b.v], a: b.si0, b: b.si1, pct: b.pct }; }) });
+  });
+  chart("c-heat", heat);
+
+  leyenda(document.getElementById("ley-serie"), [{ c: "--serie-mujer", t: "Mujeres", line: 1 }, { c: "--neutro", t: "Total", line: 1 }, { c: "--serie-varon", t: "Varones", line: 1 }]);
+  var per = D.serie.periodos.map(function (p) { return p.replace("-T", " T"); });
+  tabla(document.getElementById("c-serie").closest("figure"), ["Trimestre", "Mujeres", "Total", "Varones"],
+    per.map(function (p, i) { return [p, p1(D.serie.Mujer[i]), p1(D.serie.Total[i]), p1(D.serie["Varón"][i])]; }));
+  chart("c-serie", function (el, W) {
+    lines(el, W, { x: per, ymin: 0, ymax: 50, fmt: p1, tick: function (t) { return t + " %"; }, labelW: 64, aria: "Tasa de informalidad por trimestre y sexo",
+      series: [{ name: "Mujeres", color: "--serie-mujer", values: D.serie.Mujer }, { name: "Total", color: "--neutro", values: D.serie.Total }, { name: "Varones", color: "--serie-varon", values: D.serie["Varón"] }] });
+  });
+
+  // Modelo
+  var h = "";
+  for (var i = 0; i < 31; i++) h += "<i style='background:var(" + (i < 22 ? "--informal" : "--formal") + ")'></i>";
+  document.getElementById("dots").innerHTML = h;
+  document.getElementById("flujo-modelo").innerHTML = [
+    ["X e y", "13 variables (5 numéricas u ordinales y 8 binarias) para predecir <code>informal</code>"],
+    ["Split 80/20", n0(D.n_train) + " en train y " + n0(D.n_test) + " en test, estratificado: " + p0(D.tasa_modelo) + " de informales en los dos"],
+    ["Antigüedad faltante", "Se completa con la mediana de train (5 = de 1 a 5 años), para no usar información de test"],
+    ["Baseline", "<code>DummyClassifier</code>: predecir siempre la clase más frecuente, formal"]
+  ].map(function (p) { return "<div class='paso'><span class='n'>" + p[0].toUpperCase() + "</span><span>" + p[1] + "</span></div>"; }).join("");
+  function predHTML(c) { return "<i style='background:var(" + (c === "Informal" ? "--informal" : "--formal") + ")'></i>" + c; }
+  document.getElementById("pred-joven").innerHTML = predHTML(D.perfiles_pred.joven);
+  document.getElementById("pred-prof").innerHTML = predHTML(D.perfiles_pred.profesional);
+  set("m-crudo", p1(D.acc_k5_crudo)); set("m-esc", p1(D.acc_k5_escalado));
+  set("m-best", "k = " + D.best.k + " con voto uniforme: " + p1(D.best.acc_cv) + " de accuracy de validación");
+
+  var ks = [1, 5, 15, 31, 51, 101, 201];
+  function cvSerie(w) { return ks.map(function (k) { return D.cv.find(function (c) { return c.k === k && c.w === w; }); }); }
+  var cu = cvSerie("uniform"), cd = cvSerie("distance");
+  leyenda(document.getElementById("ley-cv"), [{ c: "--formal", t: "Voto uniforme", line: 1 }, { c: "--serie-varon", t: "Voto por distancia", line: 1 }]);
+  tabla(document.getElementById("c-cv").closest("figure"), ["k", "Uniforme", "Por distancia"],
+    ks.map(function (k, i) { return [k, p1(cu[i].acc) + " ± " + d2(cu[i].sd), p1(cd[i].acc) + " ± " + d2(cd[i].sd)]; }));
+  var bi = ks.indexOf(D.best.k);
+  chart("c-cv", function (el, W) {
+    lines(el, W, { x: ks.map(String), ymin: 74, ymax: 82, fmt: p1, tick: function (t) { return t + " %"; }, labelW: 30, H: 270,
+      xTip: function (k) { return "k = " + k; }, aria: "Curva de validación de k-NN",
+      series: [
+        { name: "Uniforme", color: "--formal", values: cu.map(function (c) { return c.acc; }), lo: cu.map(function (c) { return c.acc - c.sd; }), hi: cu.map(function (c) { return c.acc + c.sd; }) },
+        { name: "Por distancia", color: "--serie-varon", values: cd.map(function (c) { return c.acc; }), lo: cd.map(function (c) { return c.acc - c.sd; }), hi: cd.map(function (c) { return c.acc + c.sd; }) }
+      ],
+      mark: { i: bi, v: cu[bi].acc, label: "k = " + D.best.k } });
+  });
+
+  // Evaluación
+  document.getElementById("stats-acc").innerHTML = [
+    [p1(D.acc_baseline), "Baseline: siempre formal", ""],
+    [p1(D.acc_k5_crudo), "k-NN con k = 5, sin escalar", ""],
+    [p1(D.acc_k5_escalado), "k-NN con k = 5, escalado", ""],
+    [p1(D.acc_test), "k-NN con k = " + D.best.k + ", elegido con validación cruzada", " dest"]
+  ].map(function (s) { return "<div class='stat" + s[2] + "'><b>" + s[0] + "</b><span>Accuracy en test · " + s[1] + "</span></div>"; }).join("");
+  set("v-acc", p1(D.acc_test)); set("v-ntest", n0(D.n_test)); set("v-base", p1(D.acc_baseline)); set("v-cv", p1(D.best.acc_cv));
+  set("v-ninf", n0(D.cm[1][0] + D.cm[1][1]));
+
+  (function cmGrid(id, cm) {
+    var tot = cm[0][0] + cm[0][1] + cm[1][0] + cm[1][1];
+    var nombres = [["Verdaderos negativos", "Falsos positivos"], ["Falsos negativos", "Verdaderos positivos"]];
+    var h = "<div></div><div class='h'>Predicho formal</div><div class='h'>Predicho informal</div>";
+    ["Real formal", "Real informal"].forEach(function (lab, i) {
+      h += "<div class='h hl'>" + lab + "</div>";
+      [0, 1].forEach(function (j) {
+        var v = cm[i][j], a = Math.round(v / tot * 100 * 1.6) + 6, oscuro = a > 55;
+        h += "<div class='c' data-tip='" + nombres[i][j] + ": " + n0(v) + " (" + p1(v / tot * 100) + " del test)' style='background:color-mix(in oklab, var(--formal) " + Math.min(a, 92) + "%, var(--surface));color:" + (oscuro ? "var(--on-fill)" : "var(--ink)") + "'><b>" + n0(v) + "</b><span>" + nombres[i][j] + "</span></div>";
+      });
+    });
+    document.getElementById(id).innerHTML = h;
+  })("cm-knn", D.cm);
+
+  var R = D.reporte, RB = D.reporte_base;
+  function fila(nom, r) { return "<tr><td>" + nom + "</td><td class='r'>" + d2(r.precision) + "</td><td class='r'>" + d2(r.recall) + "</td><td class='r'>" + d2(r["f1-score"]) + "</td><td class='r'>" + n0(r.support) + "</td></tr>"; }
+  document.getElementById("tbl-reporte").innerHTML = "<table><thead><tr><th>k-NN, k = " + D.best.k + "</th><th class='r'>Precision</th><th class='r'>Recall</th><th class='r'>F1</th><th class='r'>Casos</th></tr></thead><tbody>" +
+    fila("Formal", R["0"]) + fila("Informal", R["1"]) + fila("Promedio macro", R["macro avg"]) +
+    "<tr><td>Accuracy</td><td></td><td></td><td class='r'>" + d2(R.accuracy) + "</td><td class='r'>" + n0(R["macro avg"].support) + "</td></tr>" +
+    "<tr><td colspan='5' style='color:var(--ink-2);font-size:13px'>Baseline: F1 de Informal " + d2(RB["1"]["f1-score"]) + ", F1 macro " + d2(RB["macro avg"]["f1-score"]) + ", accuracy " + d2(RB.accuracy) + "</td></tr></tbody></table>";
+  set("v-rec", p0(R["1"].recall * 100)); set("v-prec", p0(R["1"].precision * 100));
+  set("v-f1", d2(R["macro avg"]["f1-score"])); set("v-f1b", d2(RB["macro avg"]["f1-score"]));
+
+  // Errores
+  set("r-fn", n0(D.cm[1][0]));
+  var dec1 = function (v) { return v.toLocaleString("es-AR", { maximumFractionDigits: 1 }); };
+  var pct = function (v) { return p0(v * 100); };
+  var PF = [["edad", "Edad promedio", dec1], ["horas", "Horas por semana", dec1], ["antiguedad", "Antigüedad (1 a 6)", d2], ["nivel_ed", "Nivel educativo (0 a 6)", d2],
+    ["tamano", "Tamaño del lugar (0 a 3)", d2], ["estatal", "Trabaja en el Estado", pct], ["servicio_domestico", "Servicio doméstico", pct],
+    ["construccion", "Construcción", pct], ["tamano_sin_dato", "No sabe el tamaño", pct]];
+  document.getElementById("tbl-perfil").innerHTML = "<table><thead><tr><th>Informales</th><th class='r'>No detectados</th><th class='r'>Detectados</th></tr></thead><tbody>" +
+    PF.map(function (p) { var v = D.perfil_err[p[0]]; return "<tr><td>" + p[1] + "</td><td class='r'><strong>" + p[2](v[0]) + "</strong></td><td class='r'>" + p[2](v[1]) + "</td></tr>"; }).join("") + "</tbody></table>";
+  var recRows = ["Hasta 5", "6 a 40", "Más de 40", "Sin dato"].map(function (t) { return [t === "Sin dato" ? "No sabe el tamaño" : t + " personas", D.recall_tam[t]]; })
+    .concat([["Sector privado", D.recall_estatal["0"]], ["Estado", D.recall_estatal["1"]]]);
+  document.getElementById("tbl-recall").innerHTML = "<table><caption>Informales detectados (recall) por grupo, en test</caption><thead><tr><th>Grupo</th><th class='r'>Detectados</th><th class='r'>Accuracy</th></tr></thead><tbody>" +
+    recRows.map(function (r) { var bajo = r[1].recall < 30; return "<tr><td>" + r[0] + "</td><td class='r'>" + (bajo ? "<strong>" : "") + p0(r[1].recall) + (bajo ? "</strong>" : "") + "</td><td class='r'>" + p0(r[1].acc) + "</td></tr>"; }).join("") + "</tbody></table>";
+
+  var NI = { tamano: "Tamaño del lugar", servicio_domestico: "Servicio doméstico", antiguedad: "Antigüedad", horas: "Horas", nivel_ed: "Nivel educativo", estatal: "Estado",
+    edad: "Edad", construccion: "Construcción", tamano_sin_dato: "No sabe el tamaño", comercio_gastronomia: "Comercio o gastronomía", jefe_hogar: "Jefe de hogar", mujer: "Mujer", migrante: "Migrante" };
+  var fpp = function (v) { return (v < 0 ? "−" : "") + Math.abs(v).toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }); };
+  tabla(document.getElementById("c-imp").closest("figure"), ["Variable", "Caída del accuracy (pp)", "Desvío"], D.importancia.map(function (r) { return [NI[r.v], fpp(r.m), d2(r.sd)]; }));
+  chart("c-imp", function (el, W) {
+    hbar(el, W, { max: 8, color: "--formal", fmt: function (v) { return fpp(v) + " pp"; }, tick: function (t) { return t + " pp"; }, labelW: 170, aria: "Importancia por permutación",
+      rows: D.importancia.map(function (r) { return { label: NI[r.v], value: r.m, sd: r.sd, tip: NI[r.v] + "\nCaída: " + fpp(r.m) + " puntos ± " + d2(r.sd) }; }) });
+  });
+
+  // ---------- dibujar y redibujar ----------
+  drawAll();
+  if (window.ResizeObserver) { var ro = new ResizeObserver(function () { drawAll(); }); charts.forEach(function (c) { ro.observe(c.el); }); }
+  else window.addEventListener("resize", drawAll);
+
+  // ---------- ventana de código ----------
+  var NOMBRE_CAP = { datos: "02 · Los datos", calidad: "03 · Calidad de los datos", exploracion: "04 · Exploración", relaciones: "05 · Qué se relaciona",
+    modelo: "06 · El modelo", evaluacion: "07 · Evaluación", errores: "08 · En qué se equivoca y qué usa" };
+  var modal = document.getElementById("modal"), mBody = document.getElementById("m-body"), mTabs = document.getElementById("m-tabs");
+  function abrirCodigo(cap, snip) {
+    var lista = D.codigo[cap] || [];
+    document.getElementById("m-cap").textContent = NOMBRE_CAP[cap] || "";
+    document.getElementById("m-tit").textContent = "Código del notebook";
+    mTabs.innerHTML = lista.map(function (s, i) { return "<button type='button' data-i='" + i + "'>" + esc(s.t) + "</button>"; }).join("");
+    mBody.innerHTML = lista.map(function (s, i) {
+      return "<section class='snip' id='snip-" + i + "'><div class='snip-h'><h4>" + esc(s.t) + "</h4><button type='button' data-copiar='" + i + "'>Copiar</button></div>" +
+        "<pre class='cod'><code class='language-python'>" + esc(s.c) + "</code></pre></section>";
+    }).join("");
+    if (window.hljs) mBody.querySelectorAll("code").forEach(function (c) { try { window.hljs.highlightElement(c); } catch (e) { } });
+    if (typeof modal.showModal === "function") modal.showModal(); else modal.setAttribute("open", "");
+    var idx = Math.min(snip || 0, lista.length - 1);
+    irA(idx);
+  }
+  function irA(i) {
+    var dest = document.getElementById("snip-" + i);
+    mBody.scrollTop = i && dest ? mBody.scrollTop + dest.getBoundingClientRect().top - mBody.getBoundingClientRect().top - 4 : 0;
+    marcar(i);
+  }
+  function marcar(i) {
+    mTabs.querySelectorAll("button").forEach(function (b) { b.classList.toggle("on", +b.getAttribute("data-i") === i); });
+    var on = mTabs.querySelector("button.on");
+    if (on) mTabs.scrollLeft = Math.max(0, on.offsetLeft - 20);
+  }
+  function cerrar() { if (modal.open) { if (typeof modal.close === "function") modal.close(); else modal.removeAttribute("open"); } }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-code]");
+    if (b) { abrirCodigo(b.getAttribute("data-code"), +(b.getAttribute("data-snip") || 0)); }
+  });
+  document.getElementById("m-cerrar").addEventListener("click", cerrar);
+  modal.addEventListener("click", function (e) { if (e.target === modal) cerrar(); });
+  mTabs.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    irA(+b.getAttribute("data-i"));
+  });
+  mBody.addEventListener("scroll", function () {
+    var tope = mBody.getBoundingClientRect().top + 40, idx = 0;
+    mBody.querySelectorAll(".snip").forEach(function (s, i) { if (s.getBoundingClientRect().top <= tope) idx = i; });
+    marcar(idx);
+  }, { passive: true });
+  mBody.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-copiar]"); if (!b) return;
+    var codigo = mBody.querySelectorAll("pre.cod")[+b.getAttribute("data-copiar")];
+    function ok() { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1600); }
+    function seleccionar() { var r = document.createRange(); r.selectNodeContents(codigo); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Seleccionado: Ctrl+C"; }
+    try { navigator.clipboard.writeText(codigo.textContent).then(ok, seleccionar); } catch (err) { seleccionar(); }
+  });
+
+  // ---------- navegación por capítulos ----------
+  var secs = Array.prototype.slice.call(document.querySelectorAll("[data-nav]"));
+  var nav = document.getElementById("nav");
+  nav.innerHTML = secs.map(function (s, i) { return "<a href='#" + s.id + "'>" + (i ? "<span>" + String(i).padStart(2, "0") + "</span>" : "") + s.getAttribute("data-nav") + "</a>"; }).join("");
+  var links = Array.prototype.slice.call(nav.querySelectorAll("a"));
+  var prog = document.getElementById("prog");
+  function actual() {
+    var y = window.scrollY + 90, idx = 0;
+    secs.forEach(function (s, i) { if (s.offsetTop <= y) idx = i; });
+    return idx;
+  }
+  function onScroll() {
+    var idx = actual();
+    links.forEach(function (a, i) { a.classList.toggle("on", i === idx); });
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+    var on = links[idx];
+    if (on && (on.offsetLeft < nav.scrollLeft || on.offsetLeft + on.offsetWidth > nav.scrollLeft + nav.clientWidth)) nav.scrollLeft = on.offsetLeft - 16;
+  }
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  document.addEventListener("keydown", function (e) {
+    if (modal.open) return;
+    if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var idx = actual();
+    if (e.key === "ArrowRight" || e.key === "PageDown") { if (idx < secs.length - 1) { e.preventDefault(); secs[idx + 1].scrollIntoView(); } }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { if (idx > 0) { e.preventDefault(); secs[idx - 1].scrollIntoView(); } }
+  });
+})();
+</script>
+
+</body>
+</html>
