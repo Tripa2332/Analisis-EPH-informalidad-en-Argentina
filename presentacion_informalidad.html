@@ -373,10 +373,6 @@ pre.cod code { background: none; padding: 0; font: inherit; white-space: pre; co
     <div class="cols3" id="tablas-tasas"></div>
   </details>
   <figure class="chart">
-    <div class="f-head"><figcaption><span class="ttl">Tasa de informalidad con y sin cada característica</span><span class="sub">Servicio doméstico y construcción disparan la informalidad; trabajar en el Estado la reduce mucho. El sexo, el hogar y haber nacido en otro país cambian poco.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="3"><i>&lt;/&gt;</i>Código</button></div>
-    <div class="legend" id="ley-dumb"></div><div class="plot" id="c-dumb"></div><details class="datos"></details>
-  </figure>
-  <figure class="chart">
     <div class="f-head"><figcaption><span class="ttl">Matriz de correlación</span><span class="sub">Azul: relación negativa. Rojo: positiva. La última fila es la variable objetivo.</span></figcaption><button class="btn-cod sm" data-code="relaciones" data-snip="4"><i>&lt;/&gt;</i>Código</button></div>
     <div class="plot scroll" id="c-heat"></div>
   </figure>
@@ -839,14 +835,6 @@ pre.cod code { background: none; padding: 0; font: inherit; white-space: pre; co
     tablaTasa("Grupo de edad", D.tasa_edad.map(function (r) { return { g: r.g + " años", n: r.n, tasa: r.tasa }; })) +
     tablaTasa("Región", D.tasa_region);
 
-  var NB = { servicio_domestico: "Servicio doméstico", construccion: "Construcción", tamano_sin_dato: "No sabe el tamaño", comercio_gastronomia: "Comercio o gastronomía",
-    migrante: "Nació en otro país", mujer: "Mujer", propietario: "Vivienda propia", jefe_hogar: "Jefe o jefa de hogar", estatal: "Trabaja en el Estado" };
-  leyenda(document.getElementById("ley-dumb"), [{ c: "--informal", t: "Con la característica" }, { c: "--neutro", t: "Sin la característica" }]);
-  tabla(document.getElementById("c-dumb").closest("figure"), ["Característica", "Sin", "Con", "Diferencia"],
-    D.binarias.map(function (b) { return [NB[b.v], p1(b.si0), p1(b.si1), (b.si1 - b.si0 > 0 ? "+" : "−") + Math.abs(b.si1 - b.si0).toLocaleString("es-AR", { maximumFractionDigits: 1 }) + " pp"]; }));
-  chart("c-dumb", function (el, W) {
-    dumbbell(el, W, { aria: "Tasa de informalidad con y sin cada característica", rows: D.binarias.map(function (b) { return { label: NB[b.v], a: b.si0, b: b.si1, pct: b.pct }; }) });
-  });
   chart("c-heat", heat);
 
   leyenda(document.getElementById("ley-serie"), [{ c: "--serie-mujer", t: "Mujeres", line: 1 }, { c: "--neutro", t: "Total", line: 1 }, { c: "--serie-varon", t: "Varones", line: 1 }]);
